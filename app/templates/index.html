@@ -1,12 +1,16 @@
+{% extends "base.html" %}
 
-<html>
-    <head>
-        <title>{{ title }} - SRI</title>
-    </head>
-    <body>
-        <h1>Dynamic Precision Medicine - Simulation and Results Interface</h1>
-        <h3>{{  analysisOptions.simulate }}</h3>
-	<h3>{{  analysisOptions.analyze }}</h3>
-	<h3>{{  analysisOptions.experiment }}</h3>
-    </body>
-</html>
+{% block content %}
+<h3>{{  analysisOptions.simulate }}</h3>
+<form method="get" action="/simulate">
+    <button type="submit">Continue</button>
+</form>
+<h3>{{  analysisOptions.analyze }}</h3>
+<form method="get" action="/analyze">
+    <button type="submit">Continue</button>
+</form>
+<h3>{{  analysisOptions.experiment }}</h3>
+<form method="get" action="/experiment">
+    <button type="submit">Continue</button>
+</form>
+{% endblock %}

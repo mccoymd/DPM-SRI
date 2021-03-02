@@ -1,0 +1,17 @@
+
+
+<html>
+    <head>
+      {% if title %}
+      <title>{{ title }}</title>
+      {% else %}
+      <title>DPM-SRI</title>
+      {% endif %}
+    </head>
+    <body>
+      <div><a href="/index">Home</a></div>
+        <h1>Dynamic Precision Medicine - Simulation and Results Interface</h1>
+	<hr>
+	{% block content %}{% endblock %}
+    </body>
+<html>
