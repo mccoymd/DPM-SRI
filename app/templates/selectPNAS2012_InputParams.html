@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3>Choose Parameter Ranges</h3>
+
+<form action="" method="post" novalidate>
+  {{ form.hidden_tag() }}
+  <p>
+    {{ form.R1popRatio_min.label }}<br>
+    <table>
+      <tr>
+	<th>Min</th>
+	<th>Max</th>
+      </tr>
+      <tr>
+	<td>{{ form.R1popRatio_min(size=5) }}</td>
+	<td>{{ form.R1popRatio_max(size=5) }}</td>
+      </tr>
+    </table>
+  </p>
+  <p>
+    {{ form.R2popRatio_min.label }}<br>
+    <table>
+      <tr>
+	<th>Min</th>
+	<th>Max</th>
+      </tr>
+      <tr>
+	<td>{{ form.R2popRatio_min(size=5) }}</td>
+	<td>{{ form.R2popRatio_max(size=5) }}</td>
+      </tr>
+      <table>
+  </p>
+  <p>
+    {{ form.growthRate_min.label }}<br>
+    <table>
+      <tr>
+	<th>Min</th>
+	<th>Max</th>
+      </tr>
+      <tr>
+	<td>{{ form.growthRate_min(size=5) }}</td>
+	<td>{{ form.growthRate_max(size=5) }}</td>
+      </tr>
+    </table>
+  </p>
+  <p>
+    {{ form.S_D1senRatio_min.label }}<br>
+    <table>
+      <tr>
+	<th>Min</th>
+	<th>Max</th>
+      </tr>
+      <tr>
+	<td>{{ form.S_D1senRatio_min(size=5) }}</td>
+	<td>{{ form.S_D1senRatio_max(size=5) }}</td>
+      </tr>
+    </table>
+  </p>
+  <p>
+    {{ form.S_D2senRatio_min.label }}<br>
+    <table>
+      <tr>
+	<th>Min</th>
+	<th>Max</th>
+      </tr>
+      <tr>
+	<td>{{ form.S_D2senRatio_min(size=5) }}</td>
+	<td>{{ form.S_D2senRatio_max(size=5) }}</td>
+      </tr>
+    </table>
+  </p>
+  <p>
+    {{ form.R1_D1senRatio_min.label }}<br>
+    <table>
+      <tr>
+	<th>Min</th>
+	<th>Max</th>
+      </tr>
+      <tr>
+	<td>{{ form.R1_D1senRatio_min(size=5) }}</td>
+	<td>{{ form.R1_D1senRatio_max(size=5) }}</td>
+      </tr>
+    </table>
+  </p>
+  <p>
+    {{ form.R2_D2senRatio_min.label }}<br>
+    <table>
+      <tr>
+	<th>Min</th>
+	<th>Max</th>
+      <tr>
+      <tr>
+        <td>{{ form.R2_D2senRatio_min(size=5) }}</td>
+	<td>{{ form.R2_D2senRatio_max(size=5) }}</td>
+      </tr>
+    </table>
+  </p>
+  <p>
+    {{ form.S_to_R1_min.label }}<br>
+    <table>
+      <tr>
+	<th>Min</th>
+	<th>Max</th>
+      </tr>
+      <tr>
+        <td>{{ form.S_to_R1_min(size=5) }}</td>
+	<td>{{ form.S_to_R1_max(size=5) }}</td>
+    </table>
+  </p>
+  <p>
+    {{ form.S_to_R2_min.label }}<br>
+    <table>
+      <tr>
+	<th>Min</th>
+	<th>Max</th>
+      </tr>
+      <tr>
+        <td>{{ form.S_to_R2_min(size=5) }}</td>
+	<td>{{ form.S_to_R2_max(size=5) }}</td>
+      </tr>
+    </table>
+  </p>
+  <p>{{ form.submit() }}</p>
+</form>
+{% endblock %}

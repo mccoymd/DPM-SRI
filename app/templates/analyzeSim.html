@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3>PNAS 2012 Parameter Options</h3>
+<p>
+  Parameter Reducting Assumptions:<br>
+  The initial total population was 5 × 10^9,
+  roughly equivalent to a 5-cm3 lesion. <br>
+  No initial R12 population. <br>
+  Drug 1 is more effective than Drug 2 <br>
+  There are no transitions from resistant to sensitive cells <br>
+  
+</p>
+<form method="get" action="/selectPNAS2012_OutcomeFilter">
+    <button type="submit">Filter by Outcome</button>
+</form>
+<form method="get" action="/selectPNAS2012_InputParams">
+    <button type="submit">Filter by PNAS 2012 Constrained Input Parameters</button>
+</form>
+<form method="get" action="/selectPNAS2012_FullParams">
+    <button type="submit">Filter by Any PNAS 2012 Model Parameters</button>
+</form>
+<br><br><br>
+<H3>FUTURE SIMULATIONS<H3>
+<form method="get" action="/notConfigured">
+    <button type="submit">Continue</button>
+</form>
+{% endblock %}

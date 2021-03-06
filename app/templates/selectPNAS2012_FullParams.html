@@ -1,0 +1,387 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3>Choose Parameter Ranges</h3>
+
+<form action="" method="post" novalidate>
+  {{ form.hidden_tag() }}
+  <p>
+    {{ form.Spop_min.label }}<br>
+    <table>
+      <tr>
+	<th>Min</th>
+	<th>Max</th>
+      </tr>
+      <tr>
+	<td>{{ form.Spop_min(size=5) }}</td>
+	<td>{{ form.Spop_max(size=5) }}</td>
+      </tr>
+    </table>
+  </p>
+  <p>
+    {{ form.R1pop_min.label }}<br>
+    <table>
+      <tr>
+	<th>Min</th>
+	<th>Max</th>
+      </tr>
+      <tr>
+	<td>{{ form.R1pop_min(size=5) }}</td>
+	<td>{{ form.R1pop_max(size=5) }}</td>
+      </tr>
+    </table>
+  </p>
+  <p>
+    {{ form.R2pop_min.label }}<br>
+    <table>
+      <tr>
+	<th>Min</th>
+	<th>Max</th>
+      </tr>
+      <tr>
+	<td>{{ form.R2pop_min(size=5) }}</td>
+	<td>{{ form.R2pop_max(size=5) }}</td>
+      </tr>
+    </table>
+  </p>
+  <p>
+    {{ form.R12pop_min.label }}<br>
+    <table>
+      <tr>
+	<th>Min</th>
+	<th>Max</th>
+      </tr>
+      <tr>
+	<td>{{ form.R12pop_min(size=5) }}</td>
+	<td>{{ form.R12pop_max(size=5) }}</td>
+      </tr>
+    </table>
+  </p>
+  <p>
+    {{ form.growthRate_min.label }}<br>
+    <table>
+      <tr>
+	<th>Min</th>
+	<th>Max</th>
+      </tr>
+      <tr>
+	<td>{{ form.growthRate_min(size=5) }}</td>
+	<td>{{ form.growthRate_max(size=5) }}</td>
+      </tr>
+    </table>
+  </p>
+  <p>
+    {{ form.S_D1sensitivity_min.label }}<br>
+    <table>
+      <tr>
+	<th>Min</th>
+	<th>Max</th>
+      </tr>
+      <tr>
+	<td>{{ form.S_D1sensitivity_min(size=5) }}</td>
+	<td>{{ form.S_D1sensitivity_max(size=5) }}</td>
+      </tr>
+    </table>
+  </p>
+  <p>
+    {{ form.S_D2sensitivity_min.label }}<br>
+    <table>
+      <tr>
+	<th>Min</th>
+	<th>Max</th>
+      </tr>
+      <tr>
+	<td>{{ form.S_D2sensitivity_min(size=5) }}</td>
+	<td>{{ form.S_D2sensitivity_max(size=5) }}</td>
+      </tr>
+    </table>
+  </p>
+  <p>
+    {{ form.R1_D1sensitivity_min.label }}<br>
+    <table>
+      <tr>
+	<th>Min</th>
+	<th>Max</th>
+      </tr>
+      <tr>
+	<td>{{ form.R1_D1sensitivity_min(size=5) }}</td>
+	<td>{{ form.R1_D1sensitivity_max(size=5) }}</td>
+      </tr>
+    </table>
+  </p>
+  <p>
+    {{ form.R1_D2sensitivity_min.label }}<br>
+    <table>
+      <tr>
+	<th>Min</th>
+	<th>Max</th>
+      </tr>
+      <tr>
+	<td>{{ form.R1_D2sensitivity_min(size=5) }}</td>
+	<td>{{ form.R1_D2sensitivity_max(size=5) }}</td>
+      </tr>
+    </table>
+  </p>
+  <p>
+    {{ form.R2_D1sensitivity_min.label }}<br>
+    <table>
+      <tr>
+	<th>Min</th>
+	<th>Max</th>
+      </tr>
+      <tr>
+	<td>{{ form.R2_D1sensitivity_min(size=5) }}</td>
+	<td>{{ form.R2_D1sensitivity_max(size=5) }}</td>
+      </tr>
+    </table>
+  </p>
+  <p>
+    {{ form.R2_D2sensitivity_min.label }}<br>
+    <table>
+      <tr>
+	<th>Min</th>
+	<th>Max</th>
+      </tr>
+      <tr>
+	<td>{{ form.R2_D2sensitivity_min(size=5) }}</td>
+	<td>{{ form.R2_D2sensitivity_max(size=5) }}</td>
+      </tr>
+    </table>
+  </p>
+  <p>
+    {{ form.R12_D1sensitivity_min.label }}<br>
+    <table>
+      <tr>
+	<th>Min</th>
+	<th>Max</th>
+      </tr>
+      <tr>
+	<td>{{ form.R12_D1sensitivity_min(size=5) }}</td>
+	<td>{{ form.R12_D1sensitivity_max(size=5) }}</td>
+      </tr>
+    </table>
+  </p>
+  <p>
+    {{ form.R12_D2sensitivity_min.label }}<br>
+    <table>
+      <tr>
+	<th>Min</th>
+	<th>Max</th>
+      </tr>
+      <tr>
+	<td>{{ form.R12_D2sensitivity_min(size=5) }}</td>
+	<td>{{ form.R12_D2sensitivity_max(size=5) }}</td>
+      </tr>
+    </table>
+  </p>
+  <p>
+    {{ form.S_to_S_min.label }}<br>
+    <table>
+      <tr>
+	<th>Min</th>
+	<th>Max</th>
+      </tr>
+      <tr>
+	<td>{{ form.S_to_S_min(size=5) }}</td>
+	<td>{{ form.S_to_S_max(size=5) }}</td>
+      </tr>
+    </table>
+  </p>
+  <p>
+    {{ form.S_to_R1_min.label }}<br>
+    <table>
+      <tr>
+	<th>Min</th>
+	<th>Max</th>
+      </tr>
+      <tr>
+	<td>{{ form.S_to_R1_min(size=5) }}</td>
+	<td>{{ form.S_to_R1_max(size=5) }}</td>
+      </tr>
+    </table>
+  </p>
+   <p>
+    {{ form.S_to_R2_min.label }}<br>
+    <table>
+      <tr>
+	<th>Min</th>
+	<th>Max</th>
+      </tr>
+      <tr>
+	<td>{{ form.S_to_R2_min(size=5) }}</td>
+	<td>{{ form.S_to_R2_max(size=5) }}</td>
+      </tr>
+    </table>
+  </p>
+  <p>
+    {{ form.S_to_R12_min.label }}<br>
+    <table>
+      <tr>
+	<th>Min</th>
+	<th>Max</th>
+      </tr>
+      <tr>
+	<td>{{ form.S_to_R12_min(size=5) }}</td>
+	<td>{{ form.S_to_R12_max(size=5) }}</td>
+      </tr>
+    </table>
+  </p>
+  <p>
+    {{ form.R1_to_S_min.label }}<br>
+    <table>
+      <tr>
+	<th>Min</th>
+	<th>Max</th>
+      </tr>
+      <tr>
+	<td>{{ form.R1_to_S_min(size=5) }}</td>
+	<td>{{ form.R1_to_S_max(size=5) }}</td>
+      </tr>
+    </table>
+  </p>
+  <p>
+    {{ form.R1_to_R1_min.label }}<br>
+    <table>
+      <tr>
+	<th>Min</th>
+	<th>Max</th>
+      </tr>
+      <tr>
+	<td>{{ form.R1_to_R1_min(size=5) }}</td>
+	<td>{{ form.R1_to_R1_max(size=5) }}</td>
+      </tr>
+    </table>
+  </p>
+   <p>
+    {{ form.R1_to_R2_min.label }}<br>
+    <table>
+      <tr>
+	<th>Min</th>
+	<th>Max</th>
+      </tr>
+      <tr>
+	<td>{{ form.R1_to_R2_min(size=5) }}</td>
+	<td>{{ form.R1_to_R2_max(size=5) }}</td>
+      </tr>
+    </table>
+  </p>
+  <p>
+    {{ form.R1_to_R12_min.label }}<br>
+    <table>
+      <tr>
+	<th>Min</th>
+	<th>Max</th>
+      </tr>
+      <tr>
+	<td>{{ form.R1_to_R12_min(size=5) }}</td>
+	<td>{{ form.R1_to_R12_max(size=5) }}</td>
+      </tr>
+    </table>
+  </p>
+  <p>
+    {{ form.R2_to_S_min.label }}<br>
+    <table>
+      <tr>
+	<th>Min</th>
+	<th>Max</th>
+      </tr>
+      <tr>
+	<td>{{ form.R2_to_S_min(size=5) }}</td>
+	<td>{{ form.R2_to_S_max(size=5) }}</td>
+      </tr>
+    </table>
+  </p>
+  <p>
+    {{ form.R2_to_R1_min.label }}<br>
+    <table>
+      <tr>
+	<th>Min</th>
+	<th>Max</th>
+      </tr>
+      <tr>
+	<td>{{ form.R2_to_R1_min(size=5) }}</td>
+	<td>{{ form.R2_to_R1_max(size=5) }}</td>
+      </tr>
+    </table>
+  </p>
+   <p>
+    {{ form.R2_to_R2_min.label }}<br>
+    <table>
+      <tr>
+	<th>Min</th>
+	<th>Max</th>
+      </tr>
+      <tr>
+	<td>{{ form.R2_to_R2_min(size=5) }}</td>
+	<td>{{ form.R2_to_R2_max(size=5) }}</td>
+      </tr>
+    </table>
+  </p>
+  <p>
+    {{ form.R2_to_R12_min.label }}<br>
+    <table>
+      <tr>
+	<th>Min</th>
+	<th>Max</th>
+      </tr>
+      <tr>
+	<td>{{ form.R2_to_R12_min(size=5) }}</td>
+	<td>{{ form.R2_to_R12_max(size=5) }}</td>
+      </tr>
+    </table>
+  </p>
+  <p>
+    {{ form.R12_to_S_min.label }}<br>
+    <table>
+      <tr>
+	<th>Min</th>
+	<th>Max</th>
+      </tr>
+      <tr>
+	<td>{{ form.R12_to_S_min(size=5) }}</td>
+	<td>{{ form.R12_to_S_max(size=5) }}</td>
+      </tr>
+    </table>
+  </p>
+  <p>
+    {{ form.R12_to_R1_min.label }}<br>
+    <table>
+      <tr>
+	<th>Min</th>
+	<th>Max</th>
+      </tr>
+      <tr>
+	<td>{{ form.R12_to_R1_min(size=5) }}</td>
+	<td>{{ form.R12_to_R1_max(size=5) }}</td>
+      </tr>
+    </table>
+  </p>
+   <p>
+    {{ form.R12_to_R2_min.label }}<br>
+    <table>
+      <tr>
+	<th>Min</th>
+	<th>Max</th>
+      </tr>
+      <tr>
+	<td>{{ form.R12_to_R2_min(size=5) }}</td>
+	<td>{{ form.R12_to_R2_max(size=5) }}</td>
+      </tr>
+    </table>
+  </p>
+  <p>
+    {{ form.R12_to_R12_min.label }}<br>
+    <table>
+      <tr>
+	<th>Min</th>
+	<th>Max</th>
+      </tr>
+      <tr>
+	<td>{{ form.R12_to_R12_min(size=5) }}</td>
+	<td>{{ form.R12_to_R12_max(size=5) }}</td>
+      </tr>
+    </table>
+  </p>
+  <p>{{ form.submit() }}</p> 
+</form>
+{% endblock %}

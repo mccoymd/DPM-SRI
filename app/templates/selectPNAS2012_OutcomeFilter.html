@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3>Choose Parameter Ranges</h3>
+
+<form action="" method="post" novalidate>
+  {{ form.hidden_tag() }}
+  <p>
+    {{ form.baseSurvival_min.label }}<br>
+    <table>
+      <tr>
+	<th>Min</th>
+	<th>Max</th>
+      </tr>
+      <tr>
+	<td>{{ form.baseSurvival_min(size=5) }}</td>
+	<td>{{ form.baseSurvival_max(size=5) }}</td>
+      </tr>
+    </table>
+  </p>
+  <p>{{ form.submit() }}</p>
+</form>
+{% endblock %}
