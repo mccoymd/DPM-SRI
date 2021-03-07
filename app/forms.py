@@ -1,8 +1,9 @@
 from flask_wtf import FlaskForm
-from wtforms import SubmitField, DecimalField, FloatField, StringField
+from wtforms import SubmitField, DecimalField, FloatField, StringField, BooleanField
 from wtforms.validators import DataRequired
 
 class PNAS2012_OutcomeFilterForm(FlaskForm):
+    filterParameters = BooleanField('Check if also filtering by parameters')
     baseSurvival_min = FloatField('Survival Range (days) on Standard Precision Medicine',default = 0.0)
     baseSurvival_max = FloatField('Survival Range (days) on Standard Precision Medicine',default = 1845.0, validators=[DataRequired()])
     submit = SubmitField('Submit Parameters')
@@ -89,5 +90,21 @@ class PNAS2012_FullParamsForm(FlaskForm):
     R12_to_R12_max = FloatField('R2 self transition', validators=[DataRequired()])
     submit = SubmitField('Submit Parameters')
 
-#class PNAS2012_StrategyForm(FlaskForm):
+class PNAS2012_StrategiesForm(FlaskForm):
+    strategy_0 = BooleanField('Standard Precision Medicine - Strategy 0')
+    strategy_22 = BooleanField('Dynamic Precision Medicine - Strategy 2.2')
+    strategy_22_trial = BooleanField('Dynamic Precision Medicine Trial for first 2 steps ONLY - Strategy 2.2-trial')
+    kmPlot = BooleanField('Produce KM Plot for all selected strategies.')
+    benefit_DPM = BooleanField('Benefit with DPM over Strategy 0 - Increase in survival of at least 60 Days improvement representing at least a 25% overall increase.')
+    outcomePlot = BooleanField('Pairwise comparision plot of overall Survival for all selected strategies')
+    classifierPerformance = BooleanField('Test Performance of Heuristic Classifier - Sa(R1, D2) X R1 X T(R1, R12) +    Sa(R2, D2) X R2 X T(R2, R12),  >    Sa(R2, D1) X R2 X T(R2, R12) +  Sa(R1, D1) X R1 X T(R1, R12)')
+    trialGroups_firstSame = BooleanField('Analyze population where Strategy 0 and Strategy 2.2-trial treatments match for step 1 and diverge in step 2')
+    trialGroups_secondSame = BooleanField('Analyze population where Strategy 0 and Strategy 2.2-trial treatments differ for step 1 and match in step 2')
+    trialGroups_bothDiff = BooleanField('Analyze population where Strategy 0 and Strategy 2.2-trial treatments differ for both step 1 and step 2')
+    trialGroups_bothSame = BooleanField('Analyze population where Strategy 0 and Strategy 2.2-trial treatments are the same for both step 1 and step 2')
+    submit = SubmitField('Submit Analysis')
+    
+
+
+    
     

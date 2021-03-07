@@ -1,6 +1,6 @@
 from flask import render_template, redirect
 from app import app
-from app.forms import PNAS2012_InputParamsForm, PNAS2012_FullParamsForm, PNAS2012_OutcomeFilterForm
+from app.forms import PNAS2012_InputParamsForm, PNAS2012_FullParamsForm, PNAS2012_OutcomeFilterForm, PNAS2012_StrategiesForm
 import os
 
 @app.route('/')
@@ -27,12 +27,14 @@ def selectPNAS2012_OutcomeFilter():
     if form.validate_on_submit():
         #get patient table based on query and save as "./data/appData/outcomes.csv"
         commandString = "Rscript ./app/bin/filterPatient_byOutcome.R " + str(form.baseSurvival_min.data) + " " + str(form.baseSurvival_max.data)
-#        whereamI = os.getcwd()
-#        print(whereamI)
         print(commandString)
         os.system(commandString)
-        #add option to also filter by parameters
-        return redirect('/index')
+        #option to also filter by parameters
+        if form.filterParameters.data:
+            #return redirect('/selectPNAS2012_FullParams')
+            return redirect('/notCongifured')
+        else:
+            return redirect('/selectPNAS2012_SelectAnalysis')
     
     return render_template('selectPNAS2012_OutcomeFilter.html',form=form)
 
@@ -50,7 +52,8 @@ def selectPNAS2012_FullParams():
     form = PNAS2012_FullParamsForm()
     return render_template('selectPNAS2012_FullParams.html', title=title, form=form)
 
-@app.route('/selectStrategy')
+@app.route('/selectPNAS2012_SelectAnalysis')
 def selectStrategy():
-    form = PNAS2012_StrategyForm()
-    return render_template('selectPNAS2012_strategy.html',form=form)
+    form = PNAS2012_StrategiesForm()
+    return render_template('selectPNAS2012_SelectAnalysis.html',form=form)
+

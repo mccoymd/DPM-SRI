@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Choose Treatment Strategies to Compare</h2>
+
+<form action="" method="post" novalidate>
+  {{ form.hidden_tag() }}
+  <p>
+    {{ form.strategy_0 }}{{form.strategy_0.label }}<br>
+    {{ form.strategy_22 }}{{form.strategy_22.label }}<br>
+    {{ form.strategy_22_trial }}{{form.strategy_22_trial.label }}
+  </p>
+  <h3>Choose Analysis Options for Any/All Strategies</h3>
+  <p>
+    {{ form.kmPlot }}{{form.kmPlot.label }}<br>
+    {{ form.benefit_DPM }}{{form.benefit_DPM.label }}<br>
+    {{ form.outcomePlot }}{{form.outcomePlot.label }}<br>
+    {{ form.classifierPerformance }}{{form.classifierPerformance.label}}
+  </p>
+  <h3>Choose Analysis Options for Strategy 0 vs Strategy 2.2-trial</h3>
+  <p>
+    {{ form.trialGroups_bothSame }}{{ form.trialGroups_bothSame.label }}<br>
+    {{ form.trialGroups_bothDiff }}{{ form.trialGroups_bothDiff.label }}<br>
+    {{ form.trialGroups_firstSame }}{{ form.trialGroups_firstSame.label }}<br>
+    {{ form.trialGroups_secondSame }}{{ form.trialGroups_secondSame.label }}<br>
+  </p>
+  <p>{{ form.submit() }}</p>
+</form>
+{% endblock %}

@@ -1,10 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h3>Choose Parameter Ranges</h3>
+<h3>Choose Output Ranges</h3>
 
 <form action="" method="post" novalidate>
   {{ form.hidden_tag() }}
+  <p>
+    {{ form.filterParameters }}{{form.filterParameters.label }}
+  </p>
   <p>
     {{ form.baseSurvival_min.label }}<br>
     <table>
