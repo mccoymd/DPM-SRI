@@ -3,15 +3,30 @@ from app import app
 from app.forms import PNAS2012_InputParamsForm, PNAS2012_FullParamsForm, PNAS2012_OutcomeFilterForm, PNAS2012_StrategiesForm
 import os
 
+
 @app.route('/')
 @app.route('/index')
 def index():
-    analysisOptions = {'simulate': 'Simulate a New Patient Population',
-                       'analyze': 'Analyze an Existing Simulation',
-                       'experiment': 'Review Experimental Data'} 
+    analysisOptions = {}
+    projects = os.listdir('app/projects')
+    print(projects)
+    for curr_project in projects:
+        desc_filename = os.path.join('app/projects/',curr_project,'description.txt')
+        if os.path.isfile(desc_filename):
+            with open(desc_filename,'r') as file:
+                desc = file.read()
+                print(desc)
+                analysisOptions[curr_project] = desc
+            
+    #remove once projects are configured
+    analysisOptions_leg = {'simulate': 'Simulate a New Patient Population',
+                           'analyze': 'Analyze an Existing Simulation',
+                           'experiment': 'Review Experimental Data'}
+
     return render_template('index.html',
                            title='DPM-SRI',
-                           analysisOptions=analysisOptions)
+                           analysisOptions=analysisOptions,
+                           analysisOptions_leg=analysisOptions_leg)
 
 @app.route('/notConfigured')
 def notConfigured():

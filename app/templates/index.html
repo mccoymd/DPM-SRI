@@ -1,16 +1,35 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h3>{{  analysisOptions.simulate }}</h3>
+
+<h2>Available Projects</h2>
+{% for option in analysisOptions.items() %}
+  <h2>{{ option[0] }}</h2>
+  <h3>{{ option[1] }}</h3>
+{% endfor %}
+
+<h2>To be implemented... </h2>
+
+  
+<p>
+  ---------------- ---------------- ----------------<br>
+  Legacy<br>
+  ---------------- ---------------- ----------------<br>
+</p>
+
+  
+<h3>{{  analysisOptions_leg.simulate }}</h3>
 <form method="get" action="/simulate">
     <button type="submit">Continue</button>
 </form>
-<h3>{{  analysisOptions.analyze }}</h3>
+<h3>{{  analysisOptions_leg.analyze }}</h3>
 <form method="get" action="/analyzeSim">
     <button type="submit">Continue</button>
 </form>
-<h3>{{  analysisOptions.experiment }}</h3>
+<h3>{{  analysisOptions_leg.experiment }}</h3>
 <form method="get" action="/experiment">
     <button type="submit">Continue</button>
 </form>
+
+
 {% endblock %}

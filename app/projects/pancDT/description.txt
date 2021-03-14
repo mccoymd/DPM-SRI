@@ -1,0 +1,6 @@
+This is the description of the DT project
+
+plan to analylzye trialDPM simulations
+set and query relative parameter ranges based on:
+    subclone sensitivity baded on markers from individual patients in Lancet Oncology paper
+    CA-15-3 and CEA as timecourse markers for disease progression

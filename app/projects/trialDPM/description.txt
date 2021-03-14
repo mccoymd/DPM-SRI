@@ -1,0 +1,15 @@
+The trial simulation of DPM
+
+Investigating if DPM effective if only applied for first 2 steps of therapy
+
+Model:
+2 drugs are available (4 subclones)
+(other assumtions to be added... )
+
+Three strategies:
+      Strategy 0 - The most effective drug is selected based on suseptability of majority subclone
+      Strategy 2.2 - The most effective drug is selected based on the minimizing the chance of develping R12 cells
+      Strategy 2.2trial - Strategy 2.2 is appied for only first 2 steps of therepy selection, then drug selection reverts to Strategy 0
+
+Analysis Options:
+These will be added ...
