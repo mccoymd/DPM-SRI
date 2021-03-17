@@ -6,9 +6,6 @@
 <form action="" method="post" novalidate>
   {{ form.hidden_tag() }}
   <p>
-    {{ form.filterParameters }}{{form.filterParameters.label }}
-  </p>
-  <p>
     {{ form.baseSurvival_min.label }}<br>
     <table>
       <tr>
@@ -21,6 +18,28 @@
       </tr>
     </table>
   </p>
+  <h3>Choose Trial Outcomes</h3>
+
+{{ form.strategySelection.label }}<br>
+  All selected by default<br>
+  {{ form.strategySelection }}
+<h3>Choose Output Ranges</h3>
+Select outcomes based on the differences between the therapy recommendations<br>
+of DPM Strategy 2.2 and the standard precision medicine recommendation<br>
+during the first 2 steps of therapy selection.<br><br>
+
+{{ form.trialOutcomeSelection.label }}<br>
+  All selected by default<br>
+{{ form.trialOutcomeSelection(size= 6) }}
+
+
+
+  <p>
+    NOT CURRENTLY CONFIGURED<br>
+    {{ form.filterParameters }}{{form.filterParameters.label }}<br>
+    NOT CURRENTLY CONFIGURED<br><br>
+  </p>
+
   <p>{{ form.submit() }}</p>
 </form>
 {% endblock %}

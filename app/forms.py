@@ -1,11 +1,13 @@
 from flask_wtf import FlaskForm
-from wtforms import SubmitField, DecimalField, FloatField, StringField, BooleanField
+from wtforms import SubmitField, DecimalField, FloatField, StringField, BooleanField, SelectMultipleField
 from wtforms.validators import DataRequired
 
 class PNAS2012_OutcomeFilterForm(FlaskForm):
     filterParameters = BooleanField('Check if also filtering by parameters')
     baseSurvival_min = FloatField('Survival Range (days) on Standard Precision Medicine',default = 0.0)
     baseSurvival_max = FloatField('Survival Range (days) on Standard Precision Medicine',default = 1845.0, validators=[DataRequired()])
+    strategySelection = SelectMultipleField('Select Available Strategies (hold control for multiple)')
+    trialOutcomeSelection = SelectMultipleField('Select Trial Outcomes (hold control for multiple)')
     submit = SubmitField('Submit Parameters')
     
 class PNAS2012_InputParamsForm(FlaskForm):

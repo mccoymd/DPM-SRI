@@ -2,7 +2,7 @@
 
 {% block content %}
 
-{% for option in sriOptions.items() %}
+{% for option in paramOptions.items() %}
   <h2>{{ option[0] }}</h2>
   <form method="get" action={{ option[1] }}>
     <button type="submit">Continue</button>
