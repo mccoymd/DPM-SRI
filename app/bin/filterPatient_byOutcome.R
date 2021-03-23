@@ -8,7 +8,8 @@ if (length(args) > 0){
 }
 
 outcomeTable = args[3]
+outputTable = args[4]
 
 outcomes = read.csv(outcomeTable,header=TRUE)
 outcomes = outcomes[outcomes$Surv_0 >= survival_min & outcomes$Surv_0 <= survival_max,]
-write.csv(outcomes,file='./app/data/appData/outcomes.csv',row.names = FALSE)
+write.csv(outcomes,file=outputTable,row.names = FALSE)

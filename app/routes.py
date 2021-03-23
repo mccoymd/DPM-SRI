@@ -9,7 +9,7 @@ import os
 def index():
 
     sriOptions = {'Define a simulated patient population': 'selectModel',
-                  'Review Experimental Data': 'selectExperiment'}
+                  'Review Experimental Data (NOT CONFIGURED)': 'selectExperiment'}
 
 
 #testing functionality
@@ -33,7 +33,7 @@ def index():
 @app.route('/selectModel')
 def selectModel():
     modelTypes = {'PNAS 2012 Evolutionary Model':'parameterizePNAS2012',
-                  'Short Term Plastisity':'notConfigured'}
+                  'Short Term Plastisity (NOT CONFIGURED)':'notConfigured'}
     
     return render_template('selectModel.html',
                            modelTypes=modelTypes)
@@ -58,6 +58,8 @@ def parameterizePNAS2012():
 @app.route('/selectPNAS2012_OutcomeFilter', methods=['GET','POST'])
 def selectPNAS2012_OutcomeFilter():
     form = PNAS2012_OutcomeFilterForm()
+
+
     form.strategySelection.choices = [('strategy-0','Full Treatment with Standard Precision Medicine (Strategy 0 PNAS2012)'),
                                       ('strategy-22trial','First 2 Treatment Selections with DPM (Strategy 2.2 PNAS2012)'),
                                       ('strategy-22','Full Treatment with DPM (Strategy 2.2 PNAS2012)')]
@@ -65,11 +67,24 @@ def selectPNAS2012_OutcomeFilter():
                                           ('firstSame','Recommendations matched for FIRST evaluation only'),
                                           ('secondSame','Recommendation matched for SECOND evaluation only'),
                                           ('bothDiff','Recommendation matched for NO evaluation windows')]
-    #make this a dynamic selection??
+
+    #make this a dynamic selection based on uses input??
     databasePath = './app/data/database/PNAS2012/'
+    outcomeReferenceStrategy = "strategy-0" #add option to use strategy-22trial and strategy-22
+    outcomeTable = databasePath + "allPatientSurvival_" + outcomeReferenceStrategy +".csv"
+    sessionOutcomesTable = './app/data/appData/outcomes.csv'
     
     if form.validate_on_submit():
-        #TODO get patient table based on query and save as "./data/appData/outcomes.csv"
+        #get patient table based on query and save
+        filterByOutcomeCommand = "Rscript ./app/bin/filterPatient_byOutcome.R " + \
+                                 str(form.baseSurvival_min.data) + " " + \
+                                 str(form.baseSurvival_max.data) + " " + \
+                                 outcomeTable + " " + \
+                                 sessionOutcomesTable
+        print(filterByOutcomeCommand)
+#        os.system(filterByOutcomeCommand)
+
+        
         strategyString = ''
         if len(form.strategySelection.data) < 1:
             for x,y in form.strategySelection.choices:
@@ -78,15 +93,9 @@ def selectPNAS2012_OutcomeFilter():
             for x in form.strategySelection.data:
                 strategyString = x + " " + strategyString
 
-        print(strategyString)    
-        commandString = "Rscript ./app/bin/filterPatient_byOutcome.R " + \
-                        str(form.baseSurvival_min.data) + " " + \
-                        str(form.baseSurvival_max.data) + " " + \
-                        strategyString
+        print(strategyString)
 
 #        print(len(form.strategySelection.data), form.trialOutcomeSelection.data, form.baseSurvival_min.data, form.baseSurvival_max.data)        
-        print(commandString)
-#        os.system(commandString)
         #option to also filter by parameters
         if form.filterParameters.data:
             #return redirect('/selectPNAS2012_FullParams')
