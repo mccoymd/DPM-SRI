@@ -8,7 +8,7 @@ import os
 @app.route('/index')
 def index():
 
-    sriOptions = {'Define a simulated patient population': 'selectModel',
+    sriOptions = {'Analyze simulated patient populations': 'selectModel',
                   'Review Experimental Data (NOT CONFIGURED)': 'selectExperiment'}
 
 
@@ -33,6 +33,7 @@ def index():
 @app.route('/selectModel')
 def selectModel():
     modelTypes = {'PNAS 2012 Evolutionary Model':'parameterizePNAS2012',
+                  'Generalized Multi-Drug Model (NOT CONFIGURED)':'notConfigured',
                   'Short Term Plastisity (NOT CONFIGURED)':'notConfigured'}
     
     return render_template('selectModel.html',
@@ -47,10 +48,11 @@ def selectExperiment():
 
 @app.route('/parameterizePNAS2012')
 def parameterizePNAS2012():
-    paramOptions = {'Filter by outcomes in simulated patient database':'selectPNAS2012_OutcomeFilter',
-                    'PNAS 2012 Simplifying Assumptions':'selectPNAS2012_InputParams',
-                    'Full PNAS 2012 Parameter Set':'selectPNAS2012_FullParams',
-                    'Panc Digital Twins':'notConfigured'}
+    paramOptions = {'Filter by outcomes (Simulated DPM Trial)':'selectPNAS2012_OutcomeFilter',
+                    'Filter by outcomes (Panc Digital Twins)':'selectPNAS2012_PancDT',
+                    'Filter by input parameters (PNAS 2012 Simplifying Assumptions)':'selectPNAS2012_InputParams',
+                    'Filter by input parameters (PNAS 2012 Full Parameter Set)':'selectPNAS2012_FullParams'}
+
     return render_template('parameterizePNAS2012.html',
                            paramOptions=paramOptions)
 
@@ -82,9 +84,9 @@ def selectPNAS2012_OutcomeFilter():
                                  outcomeTable + " " + \
                                  sessionOutcomesTable
         print(filterByOutcomeCommand)
-#        os.system(filterByOutcomeCommand)
+        #os.system(filterByOutcomeCommand)
 
-        
+        #filtering strategies based on user input
         strategyString = ''
         if len(form.strategySelection.data) < 1:
             for x,y in form.strategySelection.choices:
@@ -92,10 +94,7 @@ def selectPNAS2012_OutcomeFilter():
         else:
             for x in form.strategySelection.data:
                 strategyString = x + " " + strategyString
-
         print(strategyString)
-
-#        print(len(form.strategySelection.data), form.trialOutcomeSelection.data, form.baseSurvival_min.data, form.baseSurvival_max.data)        
         #option to also filter by parameters
         if form.filterParameters.data:
             #return redirect('/selectPNAS2012_FullParams')
@@ -106,30 +105,23 @@ def selectPNAS2012_OutcomeFilter():
     
     return render_template('selectPNAS2012_OutcomeFilter.html',form=form)
 
+@app.route('/selectPNAS2012_PancDT', methods = ['GET','POST'])
+def selectPNAS2012_PancDT():
+    return render_template('selectPNAS2012_PancDT.html')
 
-@app.route('/notConfigured')
-def notConfigured():
-    return render_template('notConfigured.html')
-
-
-
-@app.route('/selectPNAS2012_InputParams')
+@app.route('/selectPNAS2012_InputParams', methods=['GET','POST'])
 def selectPNAS2012_InputParams():
     title = 'Analyze an Existing Simulation'
     form = PNAS2012_InputParamsForm()
     return render_template('selectPNAS2012_InputParams.html', title=title, form=form)
 
-@app.route('/selectPNAS2012_FullParams')
+@app.route('/selectPNAS2012_FullParams', methods=['GET','POST'])
 def selectPNAS2012_FullParams():
     title = 'Analyze an Existing Simulation'
     form = PNAS2012_FullParamsForm()
     return render_template('selectPNAS2012_FullParams.html', title=title, form=form)
 
-@app.route('/selectPNAS2012_SelectAnalysis')
-def selectStrategy():
-    form = PNAS2012_StrategiesForm()
-    return render_template('selectPNAS2012_SelectAnalysis.html',form=form)
+@app.route('/notConfigured')
+def notConfigured():
+    return render_template('notConfigured.html')
 
-@app.route('/analyzeSim')
-def analyzeSim():
-    return render_template('analyzeSim.html')

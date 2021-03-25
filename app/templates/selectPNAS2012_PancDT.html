@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<p>
+  Given the characteristics of an individual patient,
+  the existing patient database can be filtered by
+  bounding certain parameters related to (potentially)
+  quantifiable values.<br><br>
+  The remaining degrees of freedom can be explored
+  through analysis of the resulting population of DTs,
+  providing insight into how refining the parameters
+  will lead to a more representative DT and improved
+  theraputic decision making.
+</p>
+<h3>Set Tumor Base Growth Characteristics</h3>
+<p>
+  "aggressivness" of tumor with a upper limit on
+  the length of the outcome.<br><br>
+  ratio of molecular marker 1 to molecular marker 2
+  
+</p>
+<h3>Set Molecular Marker 1</h3>
+<p>
+  determines sensitivy of therapy<br><br>
+  Note: No molecular marker is a valid input
+</p>
+<h3>Set Molecular Marker 2</h3>
+<p>
+  determines sensitivy of therapy<br><br>
+  Note: No molecular marker is a valid input
+</p>
+
+<h3>Filter by standard PM theraputic decisions</h3>
+<p>
+  Look at drug recommendations for indivudal patients and
+  identify those that are recommended drug 1
+  continously, until a point where only drug 2 is suggested.
+</p>
+
+
+{% endblock %}
