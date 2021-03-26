@@ -1,8 +1,8 @@
-from flask import render_template, redirect
+from flask import render_template, redirect, url_for
 from app import app
 from app.forms import PNAS2012_InputParamsForm, PNAS2012_FullParamsForm, PNAS2012_OutcomeFilterForm, PNAS2012_StrategiesForm
 import os
-
+import pandas as pd
 
 @app.route('/')
 @app.route('/index')
@@ -11,23 +11,8 @@ def index():
     sriOptions = {'Analyze simulated patient populations': 'selectModel',
                   'Review Experimental Data (NOT CONFIGURED)': 'selectExperiment'}
 
-
-#testing functionality
-#    analysisOptions_proj = {}
-#    projects = os.listdir('app/projects')
-#    print(projects)
-#    for curr_project in projects:
-#        desc_filename = os.path.join('app/projects/',curr_project,'description.txt')
-#        if os.path.isfile(desc_filename):
-#            with open(desc_filename,'r') as file:
-#                desc = file.read()
-#                print(desc)
-#                analysisOptions_proj[curr_project] = desc
-#remove once projects are configured
-
     return render_template('index.html',
                            title='DPM-SRI',
-#                           analysisOptions_proj=analysisOptions_proj,
                            sriOptions=sriOptions)
 
 @app.route('/selectModel')
@@ -43,8 +28,8 @@ def selectModel():
 def selectExperiment():
     experimentTypes = {'DOD Hypermutation Cell Proliferation':'hypermutation',
                        'Panc Digital Twins':'notConfigured'}
-    
-    return render_template('notConfigured.html')
+
+    return render_template('notConfigured.html',errorString='upload experimental data to be mapped to semi-automated parameter selection')
 
 @app.route('/parameterizePNAS2012')
 def parameterizePNAS2012():
@@ -61,49 +46,72 @@ def parameterizePNAS2012():
 def selectPNAS2012_OutcomeFilter():
     form = PNAS2012_OutcomeFilterForm()
 
-
-    form.strategySelection.choices = [('strategy-0','Full Treatment with Standard Precision Medicine (Strategy 0 PNAS2012)'),
-                                      ('strategy-22trial','First 2 Treatment Selections with DPM (Strategy 2.2 PNAS2012)'),
-                                      ('strategy-22','Full Treatment with DPM (Strategy 2.2 PNAS2012)')]
+    #configure all choices TODO: configure to read from a DB metadata file
+    # set DB path TODO: make this a dynamic selection based on available DB
+    databasePath = './app/data/database/PNAS2012/'
+    outcomesTable = databasePath + 'allPatientSurvival.csv'
+    trialResultsTable = databasePath + 'allPatientTrialResults.csv'
+   
+    form.strategySelection.choices = [('strategy0','Full Treatment with Standard Precision Medicine (Strategy 0 PNAS2012)'),
+                                      ('strategy22trial','First 2 Treatment Selections with DPM (Strategy 2.2 PNAS2012)'),
+                                      ('strategy22','Full Treatment with DPM (Strategy 2.2 PNAS2012)')]
     form.trialOutcomeSelection.choices = [('bothSame','Recommendations matched for BOTH evaluation windows'),
                                           ('firstSame','Recommendations matched for FIRST evaluation only'),
                                           ('secondSame','Recommendation matched for SECOND evaluation only'),
                                           ('bothDiff','Recommendation matched for NO evaluation windows')]
 
-    #make this a dynamic selection based on uses input??
-    databasePath = './app/data/database/PNAS2012/'
-    outcomeReferenceStrategy = "strategy-0" #add option to use strategy-22trial and strategy-22
-    outcomeTable = databasePath + "allPatientSurvival_" + outcomeReferenceStrategy +".csv"
-    sessionOutcomesTable = './app/data/appData/outcomes.csv'
-    
     if form.validate_on_submit():
-        #get patient table based on query and save
-        filterByOutcomeCommand = "Rscript ./app/bin/filterPatient_byOutcome.R " + \
-                                 str(form.baseSurvival_min.data) + " " + \
-                                 str(form.baseSurvival_max.data) + " " + \
-                                 outcomeTable + " " + \
-                                 sessionOutcomesTable
-        print(filterByOutcomeCommand)
-        #os.system(filterByOutcomeCommand)
+        survivalTable = pd.read_csv(outcomesTable)    
+        trialResults = pd.read_csv(trialResultsTable)
+        
+        # get patient table based on query and save
+        strategySelection = form.strategySelection.data
+        trialGroups = form.trialOutcomeSelection.data
 
-        #filtering strategies based on user input
-        strategyString = ''
-        if len(form.strategySelection.data) < 1:
-            for x,y in form.strategySelection.choices:
-                strategyString = x + " " + strategyString
+        # filtering on strategy 0 outcomes TODO: filter on other strategy outcomes?
+        survivalTable = survivalTable[survivalTable.strategy0 >= form.baseSurvival_min.data]
+        survivalTable = survivalTable[survivalTable.strategy0 <= form.baseSurvival_max.data]
+        
+        # filtering by strategies based on user input
+        if not strategySelection:
+            print('comparing all strategies')
         else:
-            for x in form.strategySelection.data:
-                strategyString = x + " " + strategyString
-        print(strategyString)
-        #option to also filter by parameters
-        if form.filterParameters.data:
-            #return redirect('/selectPNAS2012_FullParams')
-            return redirect('/notCongifured')
-        else:
+            print('filtering by selected strategies')
+            strategySelection.insert(0,'paramID')
+            survivalTable = survivalTable[strategySelection]
+        
 
-            return redirect('/notConfigured')#setup to select analysis options for R plots
+        # filtering based on trail results
+        if not trialGroups:
+            print('using all trial results')
+        else:
+            print('filtering by trial results')
+            trialParamIDs = trialResults[trialResults['Category'].isin(trialGroups)].paramID
+            survivalTable = survivalTable[survivalTable['paramID'].isin(trialParamIDs)]
+
+        # adding trail results and filtering
+        survivalTable = survivalTable.merge(trialResults,on='paramID')            
+
+        print(trialResults.shape,'\n',trialResults.head())
+        print(survivalTable.shape[0],'\n',survivalTable.head())
+
+        # TODO add option to also filter by parameters
+        if not form.filterParameters.data:
+            return redirect('/analyzePNAS2012')            
+        else:
+            return redirect('/selectPNAS2012_filterOutcomeParameters')
+    
     
     return render_template('selectPNAS2012_OutcomeFilter.html',form=form)
+
+@app.route('/analyzePNAS2012')
+def analyzePNAS2012():
+    # TODO want to read the strategies and categories
+    # list analysis options
+    # add code to generate KM plots and others
+    errorString = 'setup to select analysis options for R plots'
+    return render_template('notConfigured.html',errorString=errorString)
+
 
 @app.route('/selectPNAS2012_PancDT', methods = ['GET','POST'])
 def selectPNAS2012_PancDT():
@@ -121,7 +129,26 @@ def selectPNAS2012_FullParams():
     form = PNAS2012_FullParamsForm()
     return render_template('selectPNAS2012_FullParams.html', title=title, form=form)
 
+@app.route('/selectPNAS2012_filterOutcomeParameters')
+def selectPNAS2012_filterOutcomeParameters():
+    errorString = 'filter the session outcome table by input parameters'
+    return render_template('notConfigured.html',errorString=errorString)
+
 @app.route('/notConfigured')
 def notConfigured():
-    return render_template('notConfigured.html')
+    errorString='Email mdm299@georgetown.edu for current status'
+    return render_template('notConfigured.html',errorString=errorString)
+
+#testing functionality
+#    analysisOptions_proj = {}
+#    projects = os.listdir('app/projects')
+#    print(projects)
+#    for curr_project in projects:
+#        desc_filename = os.path.join('app/projects/',curr_project,'description.txt')
+#        if os.path.isfile(desc_filename):
+#            with open(desc_filename,'r') as file:
+#                desc = file.read()
+#                print(desc)
+#                analysisOptions_proj[curr_project] = desc
+#remove once projects are configured
 
