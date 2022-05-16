@@ -1,1 +1,1 @@
-web: python runSRI.py
+web: bash launchAPP.sh
