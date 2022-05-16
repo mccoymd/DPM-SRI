@@ -1,5 +1,4 @@
 # DPM-SRI
-======
 
 ## To run app run commands in DPM-SRI directory
 
