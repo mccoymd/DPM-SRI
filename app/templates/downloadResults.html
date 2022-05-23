@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Download Simulation Results</h2>
+Simulation outcomes are stored in multiple files.<br>
+<br>
+YOURINPUTCSVFILENAME_retult_param_20211021.txt: 
+parameter configuration values.<br>
+<br>
+(1)parameter configuration index (one entry).<br>
+(2)initial population compositions x0 (four entries, x0(S), x0(R1), x0(R2), x0(R12)).<br>
+(3)growth rate g0 (one entry).<br>
+(4)drug sensitivity matrix Sa (eight entries, Sa(S,drug1), Sa(S,drug2), Sa(R1,drug1), Sa(R1,drug2), Sa(R2,drug1), Sa(R2,drug2), Sa(R12,drug1), Sa(R12,drug2)).<br>
+(5)transition rate matrix T (sixteen entries, T(S->S), T(S->R1), T(S->R2), T(S->R12), T(R1->S), T(R1->R1), T(R1->R2), T(R1->R12), T(R2->S), T(R2->R1), T(R2->R2), T(R2->R12), T(R12->S), T(R12->R1), T(R12->R2), T(R12->R12)<br>
+<br>
+YOURINPUTCSVFILENAME_result_stopt_20211021.txt format:
+Each line denotes the survival times (stopping time days) of 6 strategies for each parameter configuration.
+
+strategy 0: strategy 0 in the PNAS paper.<br>
+strategy 1: strategy 1 in the PNAS paper.<br>
+strategy 2.1: strategy 2.1 in the PNAS paper.<br>
+strategy 2.2: strategy 2.2 in the PNAS paper.<br>
+strategy 3: strategy 3 in the PNAS paper.<br>
+strategy 4: strategy 3 in the PNAS paper.<br>
+
+Each line has 7 entries: parameter configuration index and the survival times of the 6 strategies.<br>
+If the strategy is not used, it will not be ignored.<br>
+
+The time horizon of the therapy is 1800 days.  Each period is 45 days.  If the patient is cured (the each tumor population &lt 1), then the survival time is reported as 1845 days.  If the survival time is 1800 days, then the tumor population size is greater than 1 and smaller than the mortal level.
+
+<br><br>
+YOURINPUTCSVFILENAME_result_dosage_20211021.txt format:
+
+Each line denotes the dosage combination sequence of each strategy for each parameter configuration.
+<br>
+(1)parameter configuration index.<br>
+(2)strategy index (0, 1, 2.1, 2.2, 3, 4).<br>
+(3)(drug1 dosage, drug2 dosage) at t=0.<br>
+(4)(drug1 dosage, drug2 dosage) at t=45.<br>
+...<br>
+(42)(drug1 dosage, drug2 dosage) at t=1755.<br>
+
+If t exceeds the survival time of the strategy, then the drug dosage is set to -1.<br>
+If the strategy is not used, it will not be ignored<br>
+
+<br><br>
+YOURINPUTCSVFILENAME_result_pop_20211021.txt format:
+Each line denotes the population composition dynamics of each strategy for each parameter configuration.
+<br>
+(1)parameter configuration index.<br>
+(2)strategy index (0, 1, 2.1, 2.2, 3, 4).<br>
+(3)(S,R1,R1,R12) population size at t=45.<br>
+(4)(S,R1,R1,R12) at t=90.<br>
+...<br>
+(42)(S,R1,R1,R12) at t=1800.<br>
+
+If t exceeds the survival time of the strategy, then the population size is set to -1.<br>
+If the strategy is not used, it will not be ignored<br>
+
+Notice the dosage combination is reported at the beginning of each period, 
+and the population composition is reported at the end of each period.<br>
+
+{% endblock %}

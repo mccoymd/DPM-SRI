@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Validate Input</h2>
+The code will run some quality checks on the input file
+and then display some statistics of the uploaded patients.<br><br>
+
+<br><br>
+<form method="get" action={{ "downloadResults" }}>
+  <button type="submit">Continue</button>
+</form>
+
+
+{% endblock %}

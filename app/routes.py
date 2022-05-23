@@ -8,12 +8,30 @@ import pandas as pd
 @app.route('/index')
 def index():
 
-    sriOptions = {'Analyze simulated patient populations': 'selectModel',
-                  'Review Experimental Data (NOT CONFIGURED)': 'selectExperiment'}
+    sriOptions = {'Simulate Patient Population (table upload)': 'uploadParam',
+                  'Simulate Patient population (parameter ranges)': 'parameterizePNAS2012',
+                  'Analyze existing simulated populations': 'selectPNAS2012_OutcomeFilter'}
 
     return render_template('index.html',
                            title='DPM-SRI',
                            sriOptions=sriOptions)
+
+
+@app.route('/uploadParam')
+def uploadParam():
+    
+    return render_template('uploadParam.html')
+
+@app.route('/validateUpload')
+def validateUpload():
+    
+    return render_template('validateUpload.html')
+
+@app.route('/downloadResults')
+def downloadResults():
+    
+    return render_template('downloadResults.html')
+
 
 @app.route('/selectModel')
 def selectModel():
@@ -33,8 +51,8 @@ def selectExperiment():
 
 @app.route('/parameterizePNAS2012')
 def parameterizePNAS2012():
-    paramOptions = {'Filter by outcomes (Simulated DPM Trial)':'selectPNAS2012_OutcomeFilter',
-                    'Filter by outcomes (Panc Digital Twins)':'selectPNAS2012_PancDT',
+    paramOptions = {#'Filter by outcomes (Simulated DPM Trial)':'selectPNAS2012_OutcomeFilter',
+                    #'Filter by outcomes (Panc Digital Twins)':'selectPNAS2012_PancDT',
                     'Filter by input parameters (PNAS 2012 Simplifying Assumptions)':'selectPNAS2012_InputParams',
                     'Filter by input parameters (PNAS 2012 Full Parameter Set)':'selectPNAS2012_FullParams'}
 
@@ -127,6 +145,8 @@ def selectPNAS2012_InputParams():
 def selectPNAS2012_FullParams():
     title = 'Analyze an Existing Simulation'
     form = PNAS2012_FullParamsForm()
+    if form.validate_on_submit():
+        return redirect('/index')            
     return render_template('selectPNAS2012_FullParams.html', title=title, form=form)
 
 @app.route('/selectPNAS2012_filterOutcomeParameters')
