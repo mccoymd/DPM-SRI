@@ -20,7 +20,7 @@ def selectModel():
     modelTypes = {'PNAS 2012 Evolutionary Model':'parameterizePNAS2012',
                   'Generalized Multi-Drug Model (NOT CONFIGURED)':'notConfigured',
                   'Short Term Plastisity (NOT CONFIGURED)':'notConfigured'}
-    
+
     return render_template('selectModel.html',
                            modelTypes=modelTypes)
 
@@ -51,7 +51,7 @@ def selectPNAS2012_OutcomeFilter():
     databasePath = './app/data/database/PNAS2012/'
     outcomesTable = databasePath + 'allPatientSurvival.csv'
     trialResultsTable = databasePath + 'allPatientTrialResults.csv'
-   
+
     form.strategySelection.choices = [('strategy0','Full Treatment with Standard Precision Medicine (Strategy 0 PNAS2012)'),
                                       ('strategy22trial','First 2 Treatment Selections with DPM (Strategy 2.2 PNAS2012)'),
                                       ('strategy22','Full Treatment with DPM (Strategy 2.2 PNAS2012)')]
@@ -61,9 +61,9 @@ def selectPNAS2012_OutcomeFilter():
                                           ('bothDiff','Recommendation matched for NO evaluation windows')]
 
     if form.validate_on_submit():
-        survivalTable = pd.read_csv(outcomesTable)    
+        survivalTable = pd.read_csv(outcomesTable)
         trialResults = pd.read_csv(trialResultsTable)
-        
+
         # get patient table based on query and save
         strategySelection = form.strategySelection.data
         trialGroups = form.trialOutcomeSelection.data
@@ -71,7 +71,7 @@ def selectPNAS2012_OutcomeFilter():
         # filtering on strategy 0 outcomes TODO: filter on other strategy outcomes?
         survivalTable = survivalTable[survivalTable.strategy0 >= form.baseSurvival_min.data]
         survivalTable = survivalTable[survivalTable.strategy0 <= form.baseSurvival_max.data]
-        
+
         # filtering by strategies based on user input
         if not strategySelection:
             print('comparing all strategies')
@@ -79,7 +79,7 @@ def selectPNAS2012_OutcomeFilter():
             print('filtering by selected strategies')
             strategySelection.insert(0,'paramID')
             survivalTable = survivalTable[strategySelection]
-        
+
 
         # filtering based on trail results
         if not trialGroups:
@@ -90,18 +90,18 @@ def selectPNAS2012_OutcomeFilter():
             survivalTable = survivalTable[survivalTable['paramID'].isin(trialParamIDs)]
 
         # adding trail results and filtering
-        survivalTable = survivalTable.merge(trialResults,on='paramID')            
+        survivalTable = survivalTable.merge(trialResults,on='paramID')
 
         print(trialResults.shape,'\n',trialResults.head())
         print(survivalTable.shape[0],'\n',survivalTable.head())
 
         # TODO add option to also filter by parameters
         if not form.filterParameters.data:
-            return redirect('/analyzePNAS2012')            
+            return redirect('/analyzePNAS2012')
         else:
             return redirect('/selectPNAS2012_filterOutcomeParameters')
-    
-    
+
+
     return render_template('selectPNAS2012_OutcomeFilter.html',form=form)
 
 @app.route('/analyzePNAS2012')

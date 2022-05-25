@@ -9,7 +9,7 @@ class PNAS2012_OutcomeFilterForm(FlaskForm):
     strategySelection = SelectMultipleField('Select Available Strategies (hold control for multiple)')
     trialOutcomeSelection = SelectMultipleField('Select Trial Outcomes (hold control for multiple)')
     submit = SubmitField('Submit Parameters')
-    
+
 class PNAS2012_InputParamsForm(FlaskForm):
     R1popRatio_min = FloatField('R1 Population Ratio', default = 0, validators=[DataRequired()])
     R1popRatio_max = FloatField('R1 Population Ratio', default = 0.9, validators=[DataRequired()])
@@ -105,8 +105,4 @@ class PNAS2012_StrategiesForm(FlaskForm):
     trialGroups_bothDiff = BooleanField('Analyze population where Strategy 0 and Strategy 2.2-trial treatments differ for both step 1 and step 2')
     trialGroups_bothSame = BooleanField('Analyze population where Strategy 0 and Strategy 2.2-trial treatments are the same for both step 1 and step 2')
     submit = SubmitField('Submit Analysis')
-    
 
-
-    
-    
