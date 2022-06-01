@@ -42,7 +42,6 @@ class PNAS2012_FullParamsForm(FlaskForm):
     R12pop_max = FloatField('R12 Population', validators=[DataRequired()])
     growthRate_min = FloatField('Growth Rate', validators=[DataRequired()])
     growthRate_max = FloatField('Growth Rate', validators=[DataRequired()])
-    S_D1sensitivity_min = FloatField('Base D1 sensitiviety', validators=[DataRequired()])
     S_D1sensitivity_max = FloatField('Base D1 sensitiviety', validators=[DataRequired()])
     S_D2sensitivity_min = FloatField('Base D2 sensitiviety', validators=[DataRequired()])
     S_D2sensitivity_max = FloatField('Base D2 sensitiviety', validators=[DataRequired()])    

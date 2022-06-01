@@ -1,4 +1,78 @@
 from app import db
+import sqlalchemy as sa
+from sqlalchemy_utils import CompositeType
+
+
+class Populations(db.Model):
+    __tablename__ = "populations"
+
+    id = db.Column(db.Integer, primary_key=True)
+    parameter_id = db.Column(db.Integer, db.ForeignKey('parameters.id'))
+    strategy_id = db.Column(db.Integer, db.ForeignKey('strategies.id'))
+    t = db.Column(db.Integer, index=True)
+    s = db.Column(db.Numeric, index=True)
+    r1 = db.Column(db.Numeric, index=True)
+    r2 = db.Column(db.Numeric, index=True)
+    r12 = db.Column(db.Numeric, index=True)
+
+    def __init__(self, t, s, r1, r2, r12):
+        self.t = t
+        self.s = s
+        self.r1 = r1
+        self.r2 = r2
+        self.r12 = r12
+
+    def __repr__(self):
+        return '<id {}>'.format(self.id)
+
+class DrugDosages(db.Model):
+    __tablename__ = "drug_dosages"
+
+    id = db.Column(db.Integer, primary_key=True)
+    parameter_id = db.Column(db.Integer, db.ForeignKey('parameters.id'))
+    strategy_id = db.Column(db.Integer, db.ForeignKey('strategies.id'))
+    t = db.Column(db.Integer, index=True)
+    drug_1 = db.Column(db.Numeric, index=True)
+    drug_2 = db.Column(db.Numeric, index=True)
+
+    def __init__(self, t, drug_1, drug_2):
+        self.t = t
+        self.drug_1 = drug_1
+        self.drug_2 = drug_2
+
+    def __repr__(self):
+        return '<id {}>'.format(self.id)
+
+class StoppingTimes(db.Model):
+    __tablename__ = 'stopping_times'
+
+    id = db.Column(db.Integer, primary_key=True)
+    parameter_id = db.Column(db.Integer, db.ForeignKey('parameters.id'))
+    strategy_0 = db.Column(db.Numeric, index=True)
+    strategy_1 = db.Column(db.Numeric, index=True)
+    strategy_2_1 = db.Column(db.Numeric, index=True)
+    strategy_2_2 = db.Column(db.Numeric, index=True)
+    strategy_3 = db.Column(db.Numeric, index=True)
+    strategy_1_dp = db.Column(db.Numeric, index=True)
+    strategy_2_1_dp = db.Column(db.Numeric, index=True)
+    strategy_2_2_dp = db.Column(db.Numeric, index=True)
+    strategy_3_dp = db.Column(db.Numeric, index=True)
+    global_dp = db.Column(db.Numeric, index=True)
+
+    def __init__(self, strategy_0, strategy_1, strategy_2_1, strategy_2_2, strategy_3, strategy_1_dp, strategy_2_1_dp, strategy_2_2_dp, strategy_3_dp, global_dp):
+        self.strategy_0 = strategy_0
+        self.strategy_1 = strategy_1
+        self.strategy_2_1 = strategy_2_1
+        self.strategy_2_2 = strategy_2_2
+        self.strategy_3 = strategy_3
+        self.strategy_1_dp = strategy_1_dp
+        self.strategy_2_1_dp = strategy_2_1_dp
+        self.strategy_2_2_dp = strategy_2_2_dp
+        self.strategy_3_dp = strategy_3_dp
+        self.global_dp = global_dp
+
+    def __repr__(self):
+        return '<id {}>'.format(self.id)
 
 class SimulationTypes(db.Model):
     __tablename__ = 'simulation_types'
@@ -12,7 +86,6 @@ class Parameters(db.Model):
     __tablename__ = 'parameters'
 
     id = db.Column(db.Integer, primary_key=True)
-    simulation_output_id = db.Column(db.Integer, db.ForeignKey('simulation_output.id'))
     initial_subclone_population_id = db.Column(db.Integer, db.ForeignKey('initial_populations.id'))
     growth_rate = db.Column(db.Numeric, index=True)
     evolutionary_rates_id = db.Column(db.Integer, db.ForeignKey('transition_rates.id'))
@@ -113,33 +186,15 @@ class TransitionRates(db.Model):
     def __repr__(self):
         return '<id {}>'.format(self.id)
 
-class SimulationOutput(db.Model):
-    __tablename__ = 'simulation_output'
-
-    id = db.Column(db.Integer, primary_key=True)
-    strategy_id = db.Column(db.Integer, db.ForeignKey('strategy.id'))
-    parameter_id = db.Column(db.Integer, db.ForeignKey('parameters.id'))
-    subclone_populations = db.Column(db.Numeric, index=True)
-    drug_dosage = db.Column(db.Numeric, index=True)
-    stopping_time = db.Column(db.String(256), index=True)
-
-    def __init__(self, subclone_populations, drug_dosage, stopping_time, parameter_id, strategy_id):
-        self.subclone_populations = subclone_populations
-        self.drug_dosage = drug_dosage
-        self.stopping_time = stopping_time
-        self.parameter_id = parameter_id
-        self.strategy_id = strategy_id
-
-    def __repr__(self):
-        return '<id {}>'.format(self.id)
-
 class Strategy(db.Model):
-    __tablename__ = 'strategy'
+    __tablename__ = 'strategies'
 
     id = db.Column(db.Integer, primary_key=True)
-    description = db.Column(db.String(128), index=True)
+    name = db.Column(db.String(512), index=True)
+    description = db.Column(db.String(512), index=True)
 
-    def __init__(self, description):
+    def __init__(self, name, description):
+        self.name = name
         self.description = description
 
     def __repr__(self):
