@@ -1,5 +1,5 @@
 from flask import render_template, redirect, url_for
-from app import app
+from app import app, db, models
 from app.forms import PNAS2012_InputParamsForm, PNAS2012_FullParamsForm, PNAS2012_OutcomeFilterForm, PNAS2012_StrategiesForm
 import os
 import pandas as pd
@@ -121,6 +121,20 @@ def selectPNAS2012_PancDT():
 def selectPNAS2012_InputParams():
     title = 'Analyze an Existing Simulation'
     form = PNAS2012_InputParamsForm()
+    # if form.validate_on_submit():
+    #     print("here")
+    # else:
+    #     print("not there")
+    #     print(form.errors)
+    if form.is_submitted():
+        field_names = ['growth_rate']
+        params = db.session.\
+                query(models.Parameters, models.DrugSensitivities).\
+                join(models.Parameters, \
+                models.Parameters.drug_sensitivities_id == \
+                models.DrugSensitivities.id).\
+                limit(5)
+        return render_template('renderResults.html', results=params)
     return render_template('selectPNAS2012_InputParams.html', title=title, form=form)
 
 @app.route('/selectPNAS2012_FullParams', methods=['GET','POST'])

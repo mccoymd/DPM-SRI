@@ -32,3 +32,8 @@ On the command line, run `psql` to connect to the psql server
 use `\c DATABASE_NAME` to connect to the database,`\c dpm_dev`to connect to your local db
 Once connected to a database, `\dt` will list all relations in the database
 To view the relations use `\d RELATION_NAME` and confirm changes
+
+
+## TODO
+[] Look into restructuring data to be unique in transtion_rates table
+[] Import simulation results data
