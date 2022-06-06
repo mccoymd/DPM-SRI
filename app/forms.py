@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import SubmitField, DecimalField, FloatField, StringField, BooleanField, SelectMultipleField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, InputRequired
 
 class PNAS2012_OutcomeFilterForm(FlaskForm):
     filterParameters = BooleanField('Check if also filtering by parameters')
@@ -11,24 +11,24 @@ class PNAS2012_OutcomeFilterForm(FlaskForm):
     submit = SubmitField('Submit Parameters')
 
 class PNAS2012_InputParamsForm(FlaskForm):
-    R1popRatio_min = FloatField('R1 Population Ratio', default = 0, validators=[DataRequired()])
-    R1popRatio_max = FloatField('R1 Population Ratio', default = 0.9, validators=[DataRequired()])
-    R2popRatio_min = FloatField('R2 Population Ratio', default = 0, validators=[DataRequired()])
-    R2popRatio_max = FloatField('R2 Population Ratio', default = 0.9, validators=[DataRequired()])
-    growthRate_min = FloatField('Growth Rate', default = 0.001, validators=[DataRequired()])
-    growthRate_max = FloatField('Growth Rate', default = 0.34, validators=[DataRequired()])
-    S_D1senRatio_min = FloatField('Sensitivity of S to D1 relative to growth rate', default = 0.000560, validators=[DataRequired()])
-    S_D1senRatio_max = FloatField('Sensitivity of S to D1 relative to growth rate', default = 440, validators=[DataRequired()])
-    S_D2senRatio_min = FloatField('Sensitivity of S to D2 relative to sensitivity to D1', default = 0.0004, validators=[DataRequired()])
-    S_D2senRatio_max = FloatField('Sensitivity of S to D2 relative to sensitivity to D1', default = 1, validators=[DataRequired()])
-    R1_D1senRatio_min = FloatField('Sensitivity of R1 to D1 over sensitivity of S to D1', default = 0, validators=[DataRequired()])
-    R1_D1senRatio_max = FloatField('Sensitivity of R1 to D1 over sensitivity of S to D1', default = 0.8, validators=[DataRequired()])
-    R2_D2senRatio_min = FloatField('Sensitivity of R2 to D2 over the sensitivity of S to D2', default = 0, validators=[DataRequired()])
-    R2_D2senRatio_max = FloatField('Sensitivity of R2 to D2 over the sensitivity of S to D2', default = 0.8, validators=[DataRequired()])
-    S_to_R1_min = FloatField('S transition to R1', default = 0.00000000001, validators=[DataRequired()])
-    S_to_R1_max = FloatField('S transition to R1', default = 0.001, validators=[DataRequired()])
-    S_to_R2_min = FloatField('S transition to R2', default = 0.00000000001, validators=[DataRequired()])
-    S_to_R2_max = FloatField('S transition to R2', default = 0.001, validators=[DataRequired()])
+    R1popRatio_min = FloatField('R1 Population Ratio', default = 0, validators=[InputRequired()])
+    R1popRatio_max = FloatField('R1 Population Ratio', default = 0.9, validators=[InputRequired()])
+    R2popRatio_min = FloatField('R2 Population Ratio', default = 0, validators=[InputRequired()])
+    R2popRatio_max = FloatField('R2 Population Ratio', default = 0.9, validators=[InputRequired()])
+    growthRate_min = FloatField('Growth Rate', default = 0.001, validators=[InputRequired()])
+    growthRate_max = FloatField('Growth Rate', default = 0.34, validators=[InputRequired()])
+    S_D1senRatio_min = FloatField('Sensitivity of S to D1 relative to growth rate', default = 0.000560, validators=[InputRequired()])
+    S_D1senRatio_max = FloatField('Sensitivity of S to D1 relative to growth rate', default = 440, validators=[InputRequired()])
+    S_D2senRatio_min = FloatField('Sensitivity of S to D2 relative to sensitivity to D1', default = 0.0004, validators=[InputRequired()])
+    S_D2senRatio_max = FloatField('Sensitivity of S to D2 relative to sensitivity to D1', default = 1, validators=[InputRequired()])
+    R1_D1senRatio_min = FloatField('Sensitivity of R1 to D1 over sensitivity of S to D1', default = 0, validators=[InputRequired()])
+    R1_D1senRatio_max = FloatField('Sensitivity of R1 to D1 over sensitivity of S to D1', default = 0.8, validators=[InputRequired()])
+    R2_D2senRatio_min = FloatField('Sensitivity of R2 to D2 over the sensitivity of S to D2', default = 0, validators=[InputRequired()])
+    R2_D2senRatio_max = FloatField('Sensitivity of R2 to D2 over the sensitivity of S to D2', default = 0.8, validators=[InputRequired()])
+    S_to_R1_min = FloatField('S transition to R1', default = 0.00000000001, validators=[InputRequired()])
+    S_to_R1_max = FloatField('S transition to R1', default = 0.001, validators=[InputRequired()])
+    S_to_R2_min = FloatField('S transition to R2', default = 0.00000000001, validators=[InputRequired()])
+    S_to_R2_max = FloatField('S transition to R2', default = 0.001, validators=[InputRequired()])
     submit = SubmitField('Submit Parameters')
 
 class PNAS2012_FullParamsForm(FlaskForm):

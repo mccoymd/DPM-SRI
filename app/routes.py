@@ -121,20 +121,7 @@ def selectPNAS2012_PancDT():
 def selectPNAS2012_InputParams():
     title = 'Analyze an Existing Simulation'
     form = PNAS2012_InputParamsForm()
-    # if form.validate_on_submit():
-    #     print("here")
-    # else:
-    #     print("not there")
-    #     print(form.errors)
-    if form.is_submitted():
-        field_names = ['growth_rate']
-        params = db.session.\
-                query(models.Parameters, models.DrugSensitivities).\
-                join(models.Parameters, \
-                models.Parameters.drug_sensitivities_id == \
-                models.DrugSensitivities.id).\
-                limit(5)
-        return render_template('renderResults.html', results=params)
+
     return render_template('selectPNAS2012_InputParams.html', title=title, form=form)
 
 @app.route('/selectPNAS2012_FullParams', methods=['GET','POST'])
@@ -152,6 +139,23 @@ def selectPNAS2012_filterOutcomeParameters():
 def notConfigured():
     errorString='Email mdm299@georgetown.edu for current status'
     return render_template('notConfigured.html',errorString=errorString)
+
+@app.route('/results', methods=['POST'])
+def results():
+    form = PNAS2012_InputParamsForm()
+    if form.validate_on_submit():
+        field_names = ['growth_rate']
+        results = db.session.\
+                query(models.Parameters, models.DrugSensitivities).\
+                join(models.Parameters, \
+                models.Parameters.drug_sensitivities_id == \
+                models.DrugSensitivities.id).\
+                where(models.Parameters.growth_rate <= form.growthRate_max.data).\
+                limit(5)
+        return render_template('renderResults.html', results=results)
+    else:
+        print("AAAAAAAAA")
+        return redirect('/notConfigured')
 
 #testing functionality
 #    analysisOptions_proj = {}
