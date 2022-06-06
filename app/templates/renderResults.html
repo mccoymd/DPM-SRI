@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>{% block title%} Results {% endblock %}</h1>
+  <div class="content">
+      <div class="result">
+        <table>
+          <tr>
+            <th>Growth Rate</th>
+            <th>S --> Drug1</th>
+          </tr>
+        {% for result in results %}
+          <tr>
+            <td>{{ result[0].growth_rate }}</td>
+            <td>{{ result[1].s_drug1 }}</td>
+          </tr>
+        {% endfor %}
+        </table>
+      </div>
+  </div>
+{% endblock %}
