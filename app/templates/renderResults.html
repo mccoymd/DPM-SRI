@@ -1,21 +1,29 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html>
+    <head>
+      {% if title %}
+      <title>{{ title }}</title>
+      {% else %}
+      <title>DPM-SRI</title>
+      {% endif %}
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/renderResults.css') }}">
+    </head>
+    <body>
+      <div><a href="/index">Home</a></div>
+        <h1>Dynamic Precision Medicine - Simulation and Results Interface</h1>
+	<hr>
 
 {% block content %}
   <h1>{% block title%} Results {% endblock %}</h1>
   <div class="content">
       <div class="result">
-        <table>
-          <tr>
-            <th>Growth Rate</th>
-            <th>S --> Drug1</th>
-          </tr>
-        {% for result in results %}
-          <tr>
-            <td>{{ result[0].growth_rate }}</td>
-            <td>{{ result[1].s_drug1 }}</td>
-          </tr>
-        {% endfor %}
-        </table>
+        <p>Total number of rows returned <strong>{{ results }}</strong></p>
+        <div class="images">
+          <img class="km-plot" src="../static/images/km_plot.png">
+          <img class="contour-plot" src="../static/images/contour_plot.png">
+        </div>
       </div>
   </div>
 {% endblock %}
+    </body>
+</html>

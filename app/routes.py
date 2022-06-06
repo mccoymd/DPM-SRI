@@ -151,10 +151,11 @@ def results():
                 models.Parameters.drug_sensitivities_id == \
                 models.DrugSensitivities.id).\
                 where(models.Parameters.growth_rate <= form.growthRate_max.data).\
-                limit(5)
+                count()
+        print(results)
         return render_template('renderResults.html', results=results)
     else:
-        print("AAAAAAAAA")
+        print(form.errors)
         return redirect('/notConfigured')
 
 #testing functionality

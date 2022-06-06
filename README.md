@@ -36,4 +36,7 @@ To view the relations use `\d RELATION_NAME` and confirm changes
 
 ## TODO
 [] Look into restructuring data to be unique in transtion_rates table
-[] Import simulation results data
+[] Import simulation results data at scale
+[] Scale query request
+[] Import csv data through app
+[] Look into db table for storing previously created image urls

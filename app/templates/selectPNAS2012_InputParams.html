@@ -1,10 +1,24 @@
-{% extends "base.html" %}
-
+<!DOCTYPE html>
+<html>
+    <head>
+      {% if title %}
+      <title>{{ title }}</title>
+      {% else %}
+      <title>DPM-SRI</title>
+      {% endif %}
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/selectPNAS2012_InputParams.css') }}">
+    </head>
+    <body>
+      <div><a href="/index">Home</a></div>
+        <h1>Dynamic Precision Medicine - Simulation and Results Interface</h1>
+	<hr>
 {% block content %}
 <h3>Choose Parameter Ranges</h3>
 
 <form action="{{ url_for('results') }}" method="post" novalidate>
   {{ form.hidden_tag() }}
+  <div class="content">
+    <div class="population-content">
   <p>
     {{ form.R1popRatio_min.label }}<br>
     <table>
@@ -44,6 +58,8 @@
       </tr>
     </table>
   </p>
+    </div>
+    <div class="sensitivity-content">
   <p>
     {{ form.S_D1senRatio_min.label }}<br>
     <table>
@@ -96,6 +112,8 @@
       </tr>
     </table>
   </p>
+    </div>
+    <div class="transition-content">
   <p>
     {{ form.S_to_R1_min.label }}<br>
     <table>
@@ -121,6 +139,10 @@
       </tr>
     </table>
   </p>
+  </div>
+  </div>
   <p>{{ form.submit() }}</p>
 </form>
 {% endblock %}
+    </body>
+</html>
