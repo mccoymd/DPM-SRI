@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from flask_wtf.file import FileField, FileRequired, FileAllowed
+#from flask_wtf.file import FileField, FileRequired, FileAllowed
 from wtforms import (
     SubmitField,
     DecimalField,
@@ -7,6 +7,7 @@ from wtforms import (
     StringField,
     BooleanField,
     SelectMultipleField,
+    MultipleFileField,
 )
 from wtforms.validators import DataRequired, InputRequired
 
@@ -214,11 +215,11 @@ class PNAS2012_StrategiesForm(FlaskForm):
 
 
 class Upload_ResultsForm(FlaskForm):
-    document = FileField(
-        "File",
-        validators=[
-            FileRequired(),
-            FileAllowed(["txt", "csv"], "Only txt and csv files accepted"),
-        ],
+    documents = MultipleFileField(
+        "Files",
+        #validators=[
+        #    FileRequired(),
+        #    FileAllowed(["txt", "csv"], "Only txt and csv files accepted"),
+        #],
     )
     submit = SubmitField("Submit")

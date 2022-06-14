@@ -86,14 +86,39 @@ def process_file(f, filename):
 
 
 def process_param_file(f):
-    print("processing parameter file")
+    with open(f, "r") as f:
+        #has_header = file_has_header(f)
+        #if has_header:
+        #    next(f)
 
+        reader = csv.reader(f, delimiter="\t")
+        for line in reader:
+            row = line[0]
+            cells = row.split(",")
+
+            parameter_id = cells[0]
+            initial_populations = cells[1:5]
+            growth_rate = cells[5]
+            drug_sensitivities = cells[6:14]
+            transition_rates = cells[14:]
+
+            population_obj = InitialPopulations(*initial_populations)
+            transition_obj = TransitionRates(*transition_rates)
+            sensitivities_obj = DrugSensitivities(*drug_sensitivities)
+
+            db_commit(population_obj)
+            db_commit(transition_obj)
+            db_commit(sensitivities_obj)
+
+            params = Parameters(growth_rate, population_obj.id, transition_obj.id, sensitivities_obj.id)
+            db_commit(params)
 
 def process_stopt_file(f):
-    has_header = csv.Sniffer().sniff(f.read(1024))
     with open(f, "r") as f:
+        has_header = file_has_header(f)
         if has_header:
             next(f)
+
         reader = csv.reader(f, delimiter="\t")
         for line in reader:
             row = line[0]
@@ -123,10 +148,18 @@ def process_pop_file(f):
         db_commit(populations)
 
 
-def db_commit(data):
+def db_commit(*data):
     try:
-        db.session.add(data)
+        for item in data:
+            db.session.add(item)
         db.session.commit()
     except:
         exc_type, exc_value, exc_traceback = sys.exc_info()
         traceback.print_exception(exc_type, exc_value, exc_traceback)
+
+
+def file_has_header(f):
+    try:
+        return csv.Sniffer().has_header(f.read(1024))
+    except:
+        return False

@@ -202,24 +202,28 @@ def uploadResults():
     form = Upload_ResultsForm()
 
     if form.validate_on_submit():
-        f = form.document.data
-        filename = secure_filename(f.filename)
+        files = form.documents.data
+        for f in files:
+            filename = secure_filename(f.filename)
 
-        if f.filename != "":
-            inputFile = os.path.join(app.config["UPLOAD_PATH"], filename)
-            f.save(inputFile)
-            split = os.path.splitext(filename)
-            name = split[0]
-            extension = split[1]
+            if f.filename != "":
+                inputFile = os.path.join(app.config["UPLOAD_PATH"], filename)
+                f.save(inputFile)
+                split = os.path.splitext(filename)
+                name = split[0]
+                extension = split[1]
 
-            if extension == ".txt":
-                output = os.path.join(app.config["UPLOAD_PATH"], name) + ".csv"
-                file_transform.convert_txt(inputFile, output)
-                os.remove(inputFile)
-                inputFile = output
+                if (extension != ".txt") and (extension != ".csv"):
+                    return render_template("uploadResults.html", form=form, extension=extension)
+                if extension == ".txt":
+                    output = os.path.join(app.config["UPLOAD_PATH"], name) + ".csv"
+                    file_transform.convert_txt(inputFile, output)
+                    os.remove(inputFile)
+                    inputFile = output
 
-            file_transform.process_file(inputFile, name)
-            os.remove(inputFile)
+                file_transform.process_file(inputFile, name)
+                os.remove(inputFile)  #keep file for certain amount of time before deleting?
+        return redirect(url_for("uploadResults"))
     else:
         print(form.errors)
 

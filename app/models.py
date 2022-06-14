@@ -1,6 +1,6 @@
 from app import db
 import sqlalchemy as sa
-from sqlalchemy_utils import CompositeType
+from datetime import datetime
 
 
 class Populations(db.Model):
@@ -119,6 +119,10 @@ class Parameters(db.Model):
     drug_sensitivities_id = db.Column(
         db.Integer, db.ForeignKey("drug_sensitivities.id")
     )
+    created_on = db.Column(db.DateTime, server_default=db.func.now())
+    updated_on = db.Column(
+        db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now()
+    )
 
     def __init__(
         self,
@@ -144,6 +148,10 @@ class InitialPopulations(db.Model):
     r1 = db.Column(db.Numeric, index=True)
     r2 = db.Column(db.Numeric, index=True)
     r12 = db.Column(db.Numeric, index=True)
+    created_on = db.Column(db.DateTime, server_default=db.func.now())
+    updated_on = db.Column(
+        db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now()
+    )
 
     def __init__(self, s, r1, r2, r12):
         self.s = s
@@ -167,6 +175,10 @@ class DrugSensitivities(db.Model):
     r2_drug2 = db.Column(db.Numeric, index=True)
     r12_drug1 = db.Column(db.Numeric, index=True)
     r12_drug2 = db.Column(db.Numeric, index=True)
+    created_on = db.Column(db.DateTime, server_default=db.func.now())
+    updated_on = db.Column(
+        db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now()
+    )
 
     def __init__(
         self,
@@ -219,22 +231,22 @@ class TransitionRates(db.Model):
 
     def __init__(
         self,
-        s_s,
-        s_r1,
-        s_r2,
-        s_r12,
-        r1_s,
-        r1_r1,
-        r1_r2,
-        r1_r12,
-        r2_s,
-        r2_r1,
-        r2_r2,
-        r2_r12,
-        r12_s,
-        r12_r1,
-        r12_r2,
-        r12_r12,
+        s_s=None,
+        s_r1=None,
+        s_r2=None,
+        s_r12=None,
+        r1_s=None,
+        r1_r1=None,
+        r1_r2=None,
+        r1_r12=None,
+        r2_s=None,
+        r2_r1=None,
+        r2_r2=None,
+        r2_r12=None,
+        r12_s=None,
+        r12_r1=None,
+        r12_r2=None,
+        r12_r12=None,
     ):
         self.s_s = s_s
         self.s_r1 = s_r1

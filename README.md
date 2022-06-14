@@ -22,6 +22,12 @@ Dependencies are based on Python version 3.9.7 and pip 22.1
 
 ## DB
 The app uses a Postgres relational db
+
+To run the app on a new machine or test locally, the db needs to be initialized.
+To do this, ensure psql is installed by running `psql --version`.
+With psql installed, run `psql` to connect to the psql command line.
+From here, run `CREATE DATABASE dpm_dev`. With the database created, run `flask db upgrade` to follow latest migration scripts.
+
 To modify the database, make the necessary changes in `app/models.py`
 After these changes are saved, run `flask db migrate -m "YOUR MESSAGE HERE"` to create a db migration script
 Once this script has been created, run `flask db upgrade` which will execute the script and make the changes in the db
@@ -38,5 +44,5 @@ To view the relations use `\d RELATION_NAME` and confirm changes
 [] Look into restructuring data to be unique in transtion_rates table
 [] Import simulation results data at scale
 [] Scale query request
-[] Import csv data through app
+[x] Import csv data through app
 [] Look into db table for storing previously created image urls

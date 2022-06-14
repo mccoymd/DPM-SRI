@@ -2,12 +2,16 @@
 
 {% block content %}
 
-<h1>Upload your CSV file</h1>
+<h1>Upload your CSV files</h1>
 <form method="POST" action="" enctype="multipart/form-data">
   {{ form.hidden_tag() }}
   <div class="upload-content">
-    <p>{{ form.document() }}</p>
-    <p class="validation-error">{{ ','.join(form.document.errors) }}</p>
+    <p>{{ form.documents() }}</p>
+    <p class="validation-error">{{ ','.join(form.documents.errors) }}</p>
+
+    {% if extension %}
+      <p>Invalid file type submitted: {{ extension }}</p>
+    {% endif %}
   </div>
   <p>{{ form.submit() }}</p>
 </form>

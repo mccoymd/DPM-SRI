@@ -5,3 +5,6 @@
 app/data/*
 .Rhistory
 ignored_files/
+.DS_Store
+app/.DS_Store
+app/tmp
