@@ -130,7 +130,9 @@ class Parameters(db.Model):
         initial_subclone_population_id,
         evolutionary_rates_id,
         drug_sensitivities_id,
+        paramter_id=None,
     ):
+        if paramter_id: self.id = paramter_id
         self.growth_rate = growth_rate
         self.initial_subclone_population_id = initial_subclone_population_id
         self.evolutionary_rates_id = evolutionary_rates_id

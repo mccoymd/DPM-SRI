@@ -96,7 +96,7 @@ def process_param_file(f):
             row = line[0]
             cells = row.split(",")
 
-            parameter_id = cells[0]
+            parameter_id = int(cells[0]) + 1
             initial_populations = cells[1:5]
             growth_rate = cells[5]
             drug_sensitivities = cells[6:14]
@@ -110,7 +110,7 @@ def process_param_file(f):
             db_commit(transition_obj)
             db_commit(sensitivities_obj)
 
-            params = Parameters(growth_rate, population_obj.id, transition_obj.id, sensitivities_obj.id)
+            params = Parameters(growth_rate, population_obj.id, transition_obj.id, sensitivities_obj.id, parameter_id)
             db_commit(params)
 
 def process_stopt_file(f):
@@ -136,6 +136,10 @@ def process_dosage_file(f):
     data = flatten_csv(f, 2)
 
     for row in data:
+        row[0] = (
+            int(row[0]) + 1
+        )  # increment paramater id to start at 1 rather than 0
+
         dosage = DrugDosages(*row)
         db_commit(dosage)
 
@@ -144,6 +148,10 @@ def process_pop_file(f):
     data = flatten_csv(f, 4)
 
     for row in data:
+        row[0] = (
+            int(row[0]) + 1
+        )  # increment paramater id to start at 1 rather than 0
+
         populations = Populations(*row)
         db_commit(populations)
 

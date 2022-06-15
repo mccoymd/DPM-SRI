@@ -6,14 +6,20 @@
 <form method="POST" action="" enctype="multipart/form-data">
   {{ form.hidden_tag() }}
   <div class="upload-content">
+    <p>Please upload parameters, dosage, population, and stopping times files simultaneously</p>
+    <p>The expected naming convention is filetype_ALLDRUG_id.extension</p>
+    <p>Where filetype is either dosage, param, pop, or stopt as either a csv or txt</p>
     <p>{{ form.documents() }}</p>
     <p class="validation-error">{{ ','.join(form.documents.errors) }}</p>
 
-    {% if extension %}
-      <p>Invalid file type submitted: {{ extension }}</p>
+    {% if file_error %}
+      <p>{{ file_error }}</p>
     {% endif %}
   </div>
-  <p>{{ form.submit() }}</p>
+  <div>
+    <p>{{ form.submit() }}</p>
+    <p>Note: Processing may take up to several hours</p>
+  </div>
 </form>
 
 {% endblock %}
