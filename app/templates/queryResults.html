@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      {% if title %}
+      <title>{{ title }}</title>
+      {% else %}
+      <title>DPM-SRI</title>
+      {% endif %}
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/renderResults.css') }}">
+    </head>
+    <body>
+      <div><a href="/index">Home</a></div>
+        <h1>Dynamic Precision Medicine - Simulation and Results Interface</h1>
+	<hr>
+
+{% block content %}
+  <h1>{% block title%} Results {% endblock %}</h1>
+  <div class="content">
+      <div class="result">
+        <p>Total number of Digital Twins found: <strong>{{ count }}</strong></p>
+        <p>Initial S Population: {{ s }}</p>
+        <p>Initial R1 Population: </p>
+        <p>Initial R2 Population: </p>
+        <p>Growth Rate: </p>
+        <p>Drug Sensitivities: </p>
+        <p>Transition Rates: </p>
+      </div>
+  </div>
+{% endblock %}
+    </body>
+</html>

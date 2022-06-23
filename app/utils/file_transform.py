@@ -10,6 +10,7 @@ from app.models import (
     InitialPopulations,
     DrugSensitivities,
     TransitionRates,
+    Strategy,
 )
 
 
@@ -23,7 +24,7 @@ def flatten_csv(fileName, new_line_value):
 
             rowData = []
 
-            tValue = 45
+            tValue = 0
             parameterId = int(cells[0]) + 1
             strategyId = int(cells[1]) + 1
             counter = 0
@@ -72,9 +73,9 @@ def convert_txt(inputFile, outputFile):
             writer.writerows(lines)
 
 
-def process_file(f, filename):
+def process_file(f, filename, file_id=None):
     if "param" in filename:
-        process_param_file(f)
+        process_param_file(f, file_id)
     elif "stopt" in filename:
         process_stopt_file(f)
     elif "dosage" in filename:
@@ -85,13 +86,13 @@ def process_file(f, filename):
         print("Unable to process file")
 
 
-def process_param_file(f):
-    with open(f, "r") as f:
-        #has_header = file_has_header(f)
-        #if has_header:
-        #    next(f)
+def process_param_file(f, file_id=None):
+    has_header = file_has_header(f)
 
+    with open(f, "r") as f:
         reader = csv.reader(f, delimiter="\t")
+        if has_header: next(reader)
+
         for line in reader:
             row = line[0]
             cells = row.split(",")
@@ -110,16 +111,24 @@ def process_param_file(f):
             db_commit(transition_obj)
             db_commit(sensitivities_obj)
 
-            params = Parameters(growth_rate, population_obj.id, transition_obj.id, sensitivities_obj.id, parameter_id)
+            params = Parameters(
+                growth_rate,
+                population_obj.id,
+                transition_obj.id,
+                sensitivities_obj.id,
+                parameter_id,
+                file_id,
+            )
             db_commit(params)
 
-def process_stopt_file(f):
-    with open(f, "r") as f:
-        has_header = file_has_header(f)
-        if has_header:
-            next(f)
 
+def process_stopt_file(f):
+    has_header = file_has_header(f)
+
+    with open(f, "r") as f:
         reader = csv.reader(f, delimiter="\t")
+        if has_header: next(reader)
+
         for line in reader:
             row = line[0]
             cells = row.split(",")
@@ -136,9 +145,7 @@ def process_dosage_file(f):
     data = flatten_csv(f, 2)
 
     for row in data:
-        row[0] = (
-            int(row[0]) + 1
-        )  # increment paramater id to start at 1 rather than 0
+        row[0] = int(row[0]) + 1  # increment paramater id to start at 1 rather than 0
 
         dosage = DrugDosages(*row)
         db_commit(dosage)
@@ -148,12 +155,21 @@ def process_pop_file(f):
     data = flatten_csv(f, 4)
 
     for row in data:
-        row[0] = (
-            int(row[0]) + 1
-        )  # increment paramater id to start at 1 rather than 0
+        row[0] = int(row[0]) + 1  # increment paramater id to start at 1 rather than 0
 
         populations = Populations(*row)
         db_commit(populations)
+
+def process_strategies_file(f):
+    has_header = file_has_header(f)
+
+    with open(f, "r") as f:
+        reader = csv.reader(f, delimiter=",")
+        if has_header: next(reader)
+
+        for line in reader:
+            cells = line[1:]
+            db_commit(Strategy(*cells))
 
 
 def db_commit(*data):
@@ -164,10 +180,11 @@ def db_commit(*data):
     except:
         exc_type, exc_value, exc_traceback = sys.exc_info()
         traceback.print_exception(exc_type, exc_value, exc_traceback)
+        db.session.rollback()
 
 
 def file_has_header(f):
-    try:
-        return csv.Sniffer().has_header(f.read(1024))
-    except:
-        return False
+    with open(f, "r") as f:
+        reader = csv.reader(f)
+        row1 = next(reader)
+        return not any(cell.isdigit() for cell in row1)

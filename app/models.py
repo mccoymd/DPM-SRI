@@ -19,7 +19,7 @@ class Populations(db.Model):
         db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now()
     )
 
-    def __init__(self, parameter_id, strategy_id, t, s, r1, r2, r12):
+    def __init__(self, parameter_id, strategy_id, t=None, s=None, r1=None, r2=None, r12=None):
         self.parameter_id = parameter_id
         self.strategy_id = strategy_id
         self.t = t
@@ -46,7 +46,7 @@ class DrugDosages(db.Model):
         db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now()
     )
 
-    def __init__(self, parameter_id, strategy_id, t, drug_1, drug_2):
+    def __init__(self, parameter_id, strategy_id, t, drug_1=0.00, drug_2=0.00):
         self.parameter_id = parameter_id
         self.strategy_id = strategy_id
         self.t = t
@@ -119,6 +119,7 @@ class Parameters(db.Model):
     drug_sensitivities_id = db.Column(
         db.Integer, db.ForeignKey("drug_sensitivities.id")
     )
+    file_id = db.Column(db.Integer, index=True)
     created_on = db.Column(db.DateTime, server_default=db.func.now())
     updated_on = db.Column(
         db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now()
@@ -131,8 +132,12 @@ class Parameters(db.Model):
         evolutionary_rates_id,
         drug_sensitivities_id,
         paramter_id=None,
+        file_id=None,
     ):
-        if paramter_id: self.id = paramter_id
+        if paramter_id:
+            self.id = paramter_id
+        if file_id:
+            self.file_id = file_id
         self.growth_rate = growth_rate
         self.initial_subclone_population_id = initial_subclone_population_id
         self.evolutionary_rates_id = evolutionary_rates_id
@@ -285,6 +290,30 @@ class Strategy(db.Model):
     def __init__(self, name, description):
         self.name = name
         self.description = description
+
+    def __repr__(self):
+        return "<id {}>".format(self.id)
+
+class DrugCategorizations(db.Model):
+    __tablename__ = "drug_categorizations"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(512), index=True)
+    t_0_dosage_1 = db.Column(db.Integer, db.ForeignKey("drug_dosages.id"))
+    t_0_dosage_2 = db.Column(db.Integer, db.ForeignKey("drug_dosages.id"))
+    t_45_dosage_1 = db.Column(db.Integer, db.ForeignKey("drug_dosages.id"))
+    t_45_dosage_2 = db.Column(db.Integer, db.ForeignKey("drug_dosages.id"))
+    created_on = db.Column(db.DateTime, server_default=db.func.now())
+    updated_on = db.Column(
+        db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now()
+    )
+
+    def __init__(self, t_0_dosage_1, t_0_dosage_2, t_45_dosage_1, t_45_dosage_2):
+        self.name = name
+        self.t_0_dosage_1 = t_0_dosage_1
+        self.t_0_dosage_2 = t_0_dosage_2
+        self.t_45_dosage_1 = t_45_dosage_1
+        self.t_45_dosage_2 = t_0_dosage_2
 
     def __repr__(self):
         return "<id {}>".format(self.id)

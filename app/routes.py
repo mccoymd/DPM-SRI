@@ -16,7 +16,7 @@ from app.models import (
     DrugSensitivities,
     TransitionRates,
 )
-from app.utils import file_transform
+from app.utils import file_transform, enums
 from werkzeug.utils import secure_filename
 import os
 import pandas as pd
@@ -28,7 +28,7 @@ def index():
 
     sriOptions = {
         "Analyze simulated patient populations": "selectModel",
-#        "Review Experimental Data (NOT CONFIGURED)": "selectExperiment",
+        #        "Review Experimental Data (NOT CONFIGURED)": "selectExperiment",
         "Upload Simulation Results": "uploadResults",
     }
 
@@ -40,7 +40,7 @@ def selectModel():
     modelTypes = {
         "Analyze 2 Drug Trial Simulation": "parameterizePNAS2012",
         "Simulate New Digital Twins": "notConfigured",
-#        "Short Term Plastisity (NOT CONFIGURED)": "notConfigured",
+        #        "Short Term Plastisity (NOT CONFIGURED)": "notConfigured",
     }
 
     return render_template("selectModel.html", modelTypes=modelTypes)
@@ -63,7 +63,7 @@ def selectExperiment():
 def parameterizePNAS2012():
     paramOptions = {
         "Filter by outcomes (Simulated DPM Trial)": "selectPNAS2012_OutcomeFilter",
-        #"Filter by outcomes (Panc Digital Twins)": "selectPNAS2012_PancDT",
+        # "Filter by outcomes (Panc Digital Twins)": "selectPNAS2012_PancDT",
         "Filter by input parameters (PNAS 2012 Simplifying Assumptions)": "selectPNAS2012_InputParams",
         "Filter by input parameters (PNAS 2012 Full Parameter Set)": "selectPNAS2012_FullParams",
     }
@@ -77,73 +77,66 @@ def selectPNAS2012_OutcomeFilter():
 
     # configure all choices TODO: configure to read from a DB metadata file
     # set DB path TODO: make this a dynamic selection based on available DB
-    databasePath = "./app/data/database/PNAS2012/"
-    outcomesTable = databasePath + "allPatientSurvival.csv"
-    trialResultsTable = databasePath + "allPatientTrialResults.csv"
+    #databasePath = "./app/data/database/PNAS2012/"
+    #outcomesTable = databasePath + "allPatientSurvival.csv"
+    #trialResultsTable = databasePath + "allPatientTrialResults.csv"
+
 
     form.strategySelection.choices = [
-        (
-            "strategy0",
-            "Full Treatment with Standard Precision Medicine (Strategy 0 PNAS2012)",
-        ),
-        (
-            "strategy22trial",
-            "First 2 Treatment Selections with DPM (Strategy 2.2 PNAS2012)",
-        ),
-        ("strategy22", "Full Treatment with DPM (Strategy 2.2 PNAS2012)"),
+        (strat.name, strat.value) for strat in enums.Strategy
     ]
     form.trialOutcomeSelection.choices = [
-        ("bothSame", "Recommendations matched for BOTH evaluation windows"),
-        ("firstSame", "Recommendations matched for FIRST evaluation only"),
-        ("secondSame", "Recommendation matched for SECOND evaluation only"),
-        ("bothDiff", "Recommendation matched for NO evaluation windows"),
+        (trial.name, trial.value) for trial in enums.TrialOutcome
     ]
 
     if form.validate_on_submit():
-        survivalTable = pd.read_csv(outcomesTable)
-        trialResults = pd.read_csv(trialResultsTable)
-
-        # get patient table based on query and save
+        results_list = []
         strategySelection = form.strategySelection.data
         trialGroups = form.trialOutcomeSelection.data
+        min_survival = form.baseSurvival_min.data
+        max_survival = form.baseSurvival_max.data
 
-        # filtering on strategy 0 outcomes TODO: filter on other strategy outcomes?
-        survivalTable = survivalTable[
-            survivalTable.strategy0 >= form.baseSurvival_min.data
-        ]
-        survivalTable = survivalTable[
-            survivalTable.strategy0 <= form.baseSurvival_max.data
-        ]
 
-        # filtering by strategies based on user input
+        # If none selected assume all
         if not strategySelection:
-            print("comparing all strategies")
-        else:
-            print("filtering by selected strategies")
-            strategySelection.insert(0, "paramID")
-            survivalTable = survivalTable[strategySelection]
+            for strat in enums.Strategy:
+                strategySelection.append(strat.name)
 
-        # filtering based on trail results
         if not trialGroups:
-            print("using all trial results")
-        else:
-            print("filtering by trial results")
-            trialParamIDs = trialResults[
-                trialResults["Category"].isin(trialGroups)
-            ].paramID
-            survivalTable = survivalTable[survivalTable["paramID"].isin(trialParamIDs)]
+            for trial in enums.TrialOutcome:
+                trialGroups.append(trial.name)
 
-        # adding trail results and filtering
-        survivalTable = survivalTable.merge(trialResults, on="paramID")
+        if enums.Strategy.STRATEGY_0.name in strategySelection:
+            results = (
+                db.session.query(
+                    #StoppingTimes.parameter_id,
+                    #StoppingTimes.strategy_0,
+                    StoppingTimes,
+                    Parameters.id,
+                    Parameters.growth_rate,
+                    Parameters.drug_sensitivities_id,
+                    Parameters.initial_subclone_population_id,
+                    InitialPopulations.id,
+                    InitialPopulations.s,
+                    InitialPopulations.r1,
+                    InitialPopulations.r2,
+                    DrugSensitivities,
+                    DrugDosages,
+                )
+                .join(StoppingTimes, StoppingTimes.parameter_id == Parameters.id)
+                .join(DrugSensitivities, Parameters.drug_sensitivities_id == DrugSensitivities.id)
+                .join(InitialPopulations, Parameters.initial_subclone_population_id == InitialPopulations.id)
+                .where(StoppingTimes.strategy_0 <= max_survival)
+                .where(StoppingTimes.strategy_0 >= min_survival)
+                .all()
+            )
+            print(results)
+        if enums.Strategy.STRATEGY_2_2_TRIAL.name in strategySelection:
+            print("Here")
+        if enums.Strategy.STRATEGY_2_2.name in strategySelection:
+            print("Here")
 
-        print(trialResults.shape, "\n", trialResults.head())
-        print(survivalTable.shape[0], "\n", survivalTable.head())
-
-        # TODO add option to also filter by parameters
-        if not form.filterParameters.data:
-            return redirect("/analyzePNAS2012")
-        else:
-            return redirect("/selectPNAS2012_filterOutcomeParameters")
+        return render_template("queryResults.html", count=len(results), s={results[7]})
 
     return render_template("selectPNAS2012_OutcomeFilter.html", form=form)
 
@@ -194,8 +187,13 @@ def results():
     form = PNAS2012_InputParamsForm()
     if form.validate_on_submit():
         results = (
-            db.session.query(Parameters, InitialPopulations, TransitionRates, DrugSensitivities)
-            .join(Parameters, Parameters.initial_subclone_population_id == InitialPopulations.id)
+            db.session.query(
+                Parameters, InitialPopulations, TransitionRates, DrugSensitivities
+            )
+            .join(
+                Parameters,
+                Parameters.initial_subclone_population_id == InitialPopulations.id,
+            )
             .join(Parameters, Parameters.evolutionary_rates_id == TransitionRates.id)
             .join(Parameters, Parameters.drug_sensitivities_id == DrugSensitivities.id)
             .where(Parameters.growth_rate <= form.growthRate_max.data)
@@ -222,7 +220,11 @@ def uploadResults():
             extension = split[1]
 
             if (extension != ".txt") and (extension != ".csv"):
-                return render_template("uploadResults.html", form=form, file_error="Invalid file type, only csv and txt accepted")
+                return render_template(
+                    "uploadResults.html",
+                    form=form,
+                    file_error="Invalid file type, only csv and txt accepted",
+                )
 
             name_split = split[0].split("_")
             file_type = name_split[0]
@@ -236,19 +238,33 @@ def uploadResults():
             elif "pop" in file_type:
                 files_dict["pop"] = f
             else:
-                return render_template("uploadResults.html", form=form, file_error="Invalid file name found: {0}".format(filename))
+                return render_template(
+                    "uploadResults.html",
+                    form=form,
+                    file_error="Invalid file name found: {0}".format(filename),
+                )
 
             file_id = name_split[2]
             file_ids.add(file_id)
 
         if len(file_ids) > 1:
-            return render_template("uploadResults.html", form=form, file_error="Found multiple ids but expected 1: {0}".format(file_ids))
+            return render_template(
+                "uploadResults.html",
+                form=form,
+                file_error="Found multiple ids but expected 1: {0}".format(file_ids),
+            )
 
         values_set = set(files_dict.values())
         if (len(values_set) != 4) or (None in values_set):
-            return render_template("uploadResults.html", form=form, file_error="Expected params, dosage, stopping times, and population files but found: {0}".format(values_set))
+            return render_template(
+                "uploadResults.html",
+                form=form,
+                file_error="Expected params, dosage, stopping times, and population files but found: {0}".format(
+                    values_set
+                ),
+            )
 
-        process_file(files_dict["param"])
+        process_file(files_dict["param"], file_ids[0])
         process_file(files_dict["stopt"])
         process_file(files_dict["dosage"])
         process_file(files_dict["pop"])
@@ -259,7 +275,8 @@ def uploadResults():
 
     return render_template("uploadResults.html", form=form)
 
-def process_file(f):
+
+def process_file(f, file_id=None):
     filename = secure_filename(f.filename)
 
     if f.filename != "":
@@ -275,8 +292,9 @@ def process_file(f):
             os.remove(inputFile)
             inputFile = output
 
-        file_transform.process_file(inputFile, name)
-        os.remove(inputFile)  #keep file for certain amount of time before deleting?
+        file_transform.process_file(inputFile, name, file_id)
+        os.remove(inputFile)  # keep file for certain amount of time before deleting?
+
 
 # testing functionality
 #    analysisOptions_proj = {}

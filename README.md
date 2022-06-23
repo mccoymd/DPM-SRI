@@ -46,3 +46,4 @@ To view the relations use `\d RELATION_NAME` and confirm changes
 [] Scale query request
 [x] Import csv data through app
 [] Look into db table for storing previously created image urls
+[] Auto update updated_on db field
