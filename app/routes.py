@@ -25,7 +25,6 @@ import pandas as pd
 @app.route("/")
 @app.route("/index")
 def index():
-
     sriOptions = {
         "Analyze simulated patient populations": "selectModel",
         #        "Review Experimental Data (NOT CONFIGURED)": "selectExperiment",
@@ -33,9 +32,24 @@ def index():
     }
 
     return render_template("index.html", title="DPM-SRI", sriOptions=sriOptions)
+  
+  
+@app.route('/uploadParam')
+def uploadParam():
+    return render_template('uploadParam.html')
+
+  
+@app.route('/validateUpload')
+def validateUpload():
+    return render_template('validateUpload.html')
+
+  
+@app.route('/downloadResults')
+def downloadResults():
+    return render_template('downloadResults.html')
 
 
-@app.route("/selectModel")
+@app.route('/selectModel')
 def selectModel():
     modelTypes = {
         "Analyze 2 Drug Trial Simulation": "parameterizePNAS2012",
@@ -67,6 +81,7 @@ def parameterizePNAS2012():
         "Filter by input parameters (PNAS 2012 Simplifying Assumptions)": "selectPNAS2012_InputParams",
         "Filter by input parameters (PNAS 2012 Full Parameter Set)": "selectPNAS2012_FullParams",
     }
+
 
     return render_template("parameterizePNAS2012.html", paramOptions=paramOptions)
 
@@ -171,8 +186,10 @@ def selectPNAS2012_InputParams():
 def selectPNAS2012_FullParams():
     title = "Analyze an Existing Simulation"
     form = PNAS2012_FullParamsForm()
-    return render_template("selectPNAS2012_FullParams.html", title=title, form=form)
 
+    if form.validate_on_submit():
+        return redirect('/index')            
+    return render_template('selectPNAS2012_FullParams.html', title=title, form=form)
 
 @app.route("/selectPNAS2012_filterOutcomeParameters")
 def selectPNAS2012_filterOutcomeParameters():
