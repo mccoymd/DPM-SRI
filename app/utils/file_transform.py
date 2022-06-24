@@ -11,7 +11,10 @@ from app.models import (
     DrugSensitivities,
     TransitionRates,
     Strategy,
+    DrugCategorizations,
 )
+from app.utils.enums import DrugCategories, TrialOutcome
+from sqlalchemy import or_
 
 
 def flatten_csv(fileName, new_line_value):
@@ -91,7 +94,8 @@ def process_param_file(f, file_id=None):
 
     with open(f, "r") as f:
         reader = csv.reader(f, delimiter="\t")
-        if has_header: next(reader)
+        if has_header:
+            next(reader)
 
         for line in reader:
             row = line[0]
@@ -127,7 +131,8 @@ def process_stopt_file(f):
 
     with open(f, "r") as f:
         reader = csv.reader(f, delimiter="\t")
-        if has_header: next(reader)
+        if has_header:
+            next(reader)
 
         for line in reader:
             row = line[0]
@@ -160,16 +165,128 @@ def process_pop_file(f):
         populations = Populations(*row)
         db_commit(populations)
 
+
 def process_strategies_file(f):
     has_header = file_has_header(f)
 
     with open(f, "r") as f:
         reader = csv.reader(f, delimiter=",")
-        if has_header: next(reader)
+        if has_header:
+            next(reader)
 
         for line in reader:
             cells = line[1:]
             db_commit(Strategy(*cells))
+
+
+def process_drug_categorizations():
+    # These values are pulled from the DB and may need to be modified
+    STANDARD_STRATEGY_ID = 1
+    DPM_STRATEGY_ID = 2
+
+    # TODO: This query needs to be refined so it only runs for dosages that haven't already been used
+    dosages = (
+        db.session.query(DrugDosages)
+        .filter(
+            or_(
+                DrugDosages.strategy_id == STANDARD_STRATEGY_ID,
+                DrugDosages.strategy_id == DPM_STRATEGY_ID,
+            )
+        )
+        .filter(or_(DrugDosages.t == 0, DrugDosages.t == 45))
+        .all()
+    )
+
+    time_dict = {}
+    for dosage in dosages:
+        if dosage.t == 0:
+            time_dict.setdefault((0, dosage.parameter_id), []).append(dosage)
+        elif dosage.t == 45:
+            time_dict.setdefault((45, dosage.parameter_id), []).append(dosage)
+
+    results_dict = {}
+    for key, dosages in time_dict.items():
+        parameter_id = key[1]
+
+        if parameter_id not in results_dict:
+            results_dict[parameter_id] = {
+                DrugCategories.STANDARD_T0: None,
+                DrugCategories.DPM_T0: None,
+                DrugCategories.STANDARD_T45: None,
+                DrugCategories.DPM_T45: None,
+            }
+
+        inner_dict = results_dict[parameter_id]
+
+        if key[0] == 0:
+            for dosage in dosages:
+                if dosage.strategy_id == STANDARD_STRATEGY_ID:
+                    inner_dict[DrugCategories.STANDARD_T0] = dosage
+                elif dosage.strategy_id == DPM_STRATEGY_ID:
+                    inner_dict[DrugCategories.DPM_T0] = dosage
+
+        elif key[0] == 45:
+            for dosage in dosages:
+                if dosage.strategy_id == STANDARD_STRATEGY_ID:
+                    inner_dict[DrugCategories.STANDARD_T45] = dosage
+                elif dosage.strategy_id == DPM_STRATEGY_ID:
+                    inner_dict[DrugCategories.DPM_T45] = dosage
+
+    for parameter_id, dosages in results_dict.items():
+        standard_t0 = dosages[DrugCategories.STANDARD_T0]
+        dpm_t0 = dosages[DrugCategories.DPM_T0]
+        standard_t45 = dosages[DrugCategories.STANDARD_T45]
+        dpm_t45 = dosages[DrugCategories.DPM_T45]
+
+        if (standard_t0.drug_1 == dpm_t0.drug_1) and (
+            standard_t0.drug_2 == dpm_t0.drug_2
+        ):
+            if (standard_t45.drug_1 == dpm_t45.drug_1) and (
+                standard_t45.drug_2 == dpm_t45.drug_2
+            ):
+                create_drug_categorization(
+                    standard_t0.id,
+                    dpm_t0.id,
+                    standard_t45.id,
+                    dpm_t45.id,
+                    TrialOutcome.BOTH_SAME,
+                )
+            else:
+                create_drug_categorization(
+                    standard_t0.id,
+                    dpm_t0.id,
+                    standard_t45.id,
+                    dpm_t45.id,
+                    TrialOutcome.FIRST_SAME,
+                )
+        else:
+            if (standard_t45.drug_1 == dpm_t45.drug_1) and (
+                standard_t45.drug_2 == dpm_t45.drug_2
+            ):
+                create_drug_categorization(
+                    standard_t0.id,
+                    dpm_t0.id,
+                    standard_t45.id,
+                    dpm_t45.id,
+                    TrialOutcome.SECOND_SAME,
+                )
+            else:
+                create_drug_categorization(
+                    standard_t0.id,
+                    dpm_t0.id,
+                    standard_t45.id,
+                    dpm_t45.id,
+                    TrialOutcome.NONE_SAME,
+                )
+
+
+def create_drug_categorization(
+    standard_t0_id, dpm_t0_id, standard_t45_id, dpm_t45_id, category
+):
+    category = DrugCategorizations(
+        standard_t0_id, dpm_t0_id, standard_t45_id, dpm_t45_id, category
+    )
+    db_commit(category)
 
 
 def db_commit(*data):

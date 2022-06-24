@@ -77,10 +77,9 @@ def selectPNAS2012_OutcomeFilter():
 
     # configure all choices TODO: configure to read from a DB metadata file
     # set DB path TODO: make this a dynamic selection based on available DB
-    #databasePath = "./app/data/database/PNAS2012/"
-    #outcomesTable = databasePath + "allPatientSurvival.csv"
-    #trialResultsTable = databasePath + "allPatientTrialResults.csv"
-
+    # databasePath = "./app/data/database/PNAS2012/"
+    # outcomesTable = databasePath + "allPatientSurvival.csv"
+    # trialResultsTable = databasePath + "allPatientTrialResults.csv"
 
     form.strategySelection.choices = [
         (strat.name, strat.value) for strat in enums.Strategy
@@ -96,7 +95,6 @@ def selectPNAS2012_OutcomeFilter():
         min_survival = form.baseSurvival_min.data
         max_survival = form.baseSurvival_max.data
 
-
         # If none selected assume all
         if not strategySelection:
             for strat in enums.Strategy:
@@ -109,8 +107,8 @@ def selectPNAS2012_OutcomeFilter():
         if enums.Strategy.STRATEGY_0.name in strategySelection:
             results = (
                 db.session.query(
-                    #StoppingTimes.parameter_id,
-                    #StoppingTimes.strategy_0,
+                    # StoppingTimes.parameter_id,
+                    # StoppingTimes.strategy_0,
                     StoppingTimes,
                     Parameters.id,
                     Parameters.growth_rate,
@@ -124,8 +122,14 @@ def selectPNAS2012_OutcomeFilter():
                     DrugDosages,
                 )
                 .join(StoppingTimes, StoppingTimes.parameter_id == Parameters.id)
-                .join(DrugSensitivities, Parameters.drug_sensitivities_id == DrugSensitivities.id)
-                .join(InitialPopulations, Parameters.initial_subclone_population_id == InitialPopulations.id)
+                .join(
+                    DrugSensitivities,
+                    Parameters.drug_sensitivities_id == DrugSensitivities.id,
+                )
+                .join(
+                    InitialPopulations,
+                    Parameters.initial_subclone_population_id == InitialPopulations.id,
+                )
                 .where(StoppingTimes.strategy_0 <= max_survival)
                 .where(StoppingTimes.strategy_0 >= min_survival)
                 .all()

@@ -1,4 +1,5 @@
 from app import db
+from app.utils import enums
 import sqlalchemy as sa
 from datetime import datetime
 
@@ -10,16 +11,14 @@ class Populations(db.Model):
     parameter_id = db.Column(db.Integer, db.ForeignKey("parameters.id"))
     strategy_id = db.Column(db.Integer, db.ForeignKey("strategies.id"))
     t = db.Column(db.Integer, index=True)
-    s = db.Column(db.Numeric, index=True)
-    r1 = db.Column(db.Numeric, index=True)
-    r2 = db.Column(db.Numeric, index=True)
-    r12 = db.Column(db.Numeric, index=True)
     created_on = db.Column(db.DateTime, server_default=db.func.now())
     updated_on = db.Column(
         db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now()
     )
 
-    def __init__(self, parameter_id, strategy_id, t=None, s=None, r1=None, r2=None, r12=None):
+    def __init__(
+        self, parameter_id, strategy_id, t=None, s=None, r1=None, r2=None, r12=None
+    ):
         self.parameter_id = parameter_id
         self.strategy_id = strategy_id
         self.t = t
@@ -294,26 +293,27 @@ class Strategy(db.Model):
     def __repr__(self):
         return "<id {}>".format(self.id)
 
+
 class DrugCategorizations(db.Model):
     __tablename__ = "drug_categorizations"
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(512), index=True)
-    t_0_dosage_1 = db.Column(db.Integer, db.ForeignKey("drug_dosages.id"))
-    t_0_dosage_2 = db.Column(db.Integer, db.ForeignKey("drug_dosages.id"))
-    t_45_dosage_1 = db.Column(db.Integer, db.ForeignKey("drug_dosages.id"))
-    t_45_dosage_2 = db.Column(db.Integer, db.ForeignKey("drug_dosages.id"))
+    standard_t0 = db.Column(db.Integer, db.ForeignKey("drug_dosages.id"))
+    dpm_t0 = db.Column(db.Integer, db.ForeignKey("drug_dosages.id"))
+    standard_t45 = db.Column(db.Integer, db.ForeignKey("drug_dosages.id"))
+    dpm_t45 = db.Column(db.Integer, db.ForeignKey("drug_dosages.id"))
+    categorization = db.Column(db.Enum(enums.TrialOutcome))
     created_on = db.Column(db.DateTime, server_default=db.func.now())
     updated_on = db.Column(
         db.DateTime, server_default=db.func.now(), server_onupdate=db.func.now()
     )
 
-    def __init__(self, t_0_dosage_1, t_0_dosage_2, t_45_dosage_1, t_45_dosage_2):
-        self.name = name
-        self.t_0_dosage_1 = t_0_dosage_1
-        self.t_0_dosage_2 = t_0_dosage_2
-        self.t_45_dosage_1 = t_45_dosage_1
-        self.t_45_dosage_2 = t_0_dosage_2
+    def __init__(self, standard_t0, dpm_t0, standard_t45, dpm_t45, category):
+        self.standard_t0 = standard_t0
+        self.dpm_t0 = dpm_t0
+        self.standard_t45 = standard_t45
+        self.dpm_t45 = dpm_t45
+        self.categorization = category
 
     def __repr__(self):
         return "<id {}>".format(self.id)
