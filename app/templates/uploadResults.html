@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>upload your csv files</h1>
+<form method="post" action="" enctype="multipart/form-data">
+  {{ form.hidden_tag() }}
+  <div class="upload-content">
+    <p>please upload parameters, dosage, population, and stopping times files simultaneously</p>
+    <p>the expected naming convention is filetype_alldrug_id.extension</p>
+    <p>where filetype is either dosage, param, pop, or stopt as either a csv or txt</p>
+    <p>{{ form.documents() }}</p>
+    <p class="validation-error">{{ ','.join(form.documents.errors) }}</p>
+
+    {% if file_error %}
+      <p>{{ file_error }}</p>
+    {% endif %}
+  </div>
+  <div>
+    <p>{{ form.submit() }}</p>
+    <p>note: processing may take up to several hours</p>
+  </div>
+</form>
+
+{% endblock %}

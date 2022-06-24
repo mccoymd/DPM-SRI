@@ -1,10 +1,10 @@
 args = commandArgs(trailingOnly=TRUE)
 if (length(args) > 0){
   survival_min = as.numeric(args[1])
-  survival_max = as.numeric(args[2]) 
+  survival_max = as.numeric(args[2])
 }else{
   survival_min = 0
-  survival_max = 1845  
+  survival_max = 1845
 }
 
 outcomeTable = args[3]

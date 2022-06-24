@@ -1,0 +1,14 @@
+.content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+
+}
+
+.population-content {
+  margin-left: 8px;
+}
+
+.transition-content {
+  margin-right: 8px;
+}
