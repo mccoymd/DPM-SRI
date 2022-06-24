@@ -124,8 +124,7 @@ def process_files(id_dict, directory):
 
 
 if __name__ == "__main__":
-    # directory = get_directory(sys.argv)
-    # files = get_files(directory)
-    # id_dict = sort_files(files)
-    # process_files(id_dict, directory)
-    file_transform.process_drug_categorizations()
+    directory = get_directory(sys.argv)
+    files = get_files(directory)
+    id_dict = sort_files(files)
+    process_files(id_dict, directory)

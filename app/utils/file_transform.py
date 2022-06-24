@@ -155,6 +155,8 @@ def process_dosage_file(f):
         dosage = DrugDosages(*row)
         db_commit(dosage)
 
+    process_drug_categorizations()
+
 
 def process_pop_file(f):
     data = flatten_csv(f, 4)
@@ -184,18 +186,19 @@ def process_drug_categorizations():
     STANDARD_STRATEGY_ID = 1
     DPM_STRATEGY_ID = 2
 
-    # TODO: This query needs to be refined so it only runs for dosages that haven't already been used
-    dosages = (
-        db.session.query(DrugDosages)
-        .filter(
-            or_(
-                DrugDosages.strategy_id == STANDARD_STRATEGY_ID,
-                DrugDosages.strategy_id == DPM_STRATEGY_ID,
-            )
-        )
-        .filter(or_(DrugDosages.t == 0, DrugDosages.t == 45))
-        .all()
-    )
+    # WARNING: This is very slow
+    query = (
+        "SELECT id FROM drug_dosages WHERE (strategy_id = {0} OR strategy_id = {1}) "
+        "AND (t = 0 OR t = 45) AND NOT EXISTS "
+        "(SELECT id FROM drug_categorizations WHERE drug_dosages.id = drug_categorizations.standard_t0 "
+        "OR drug_dosages.id = drug_categorizations.dpm_t0 "
+        "OR drug_dosages.id = drug_categorizations.standard_t45 "
+        "OR drug_dosages.id = drug_categorizations.dpm_t45)"
+    ).format(STANDARD_STRATEGY_ID, DPM_STRATEGY_ID)
+    dosages = db.session.execute(query).all()
+
+    if not dosages:
+        return
 
     time_dict = {}
     for dosage in dosages:
