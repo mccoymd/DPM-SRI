@@ -186,9 +186,8 @@ def process_drug_categorizations():
     STANDARD_STRATEGY_ID = 1
     DPM_STRATEGY_ID = 2
 
-    # WARNING: This is very slow
     query = (
-        "SELECT id FROM drug_dosages WHERE (strategy_id = {0} OR strategy_id = {1}) "
+        "SELECT * FROM drug_dosages WHERE (strategy_id = {0} OR strategy_id = {1}) "
         "AND (t = 0 OR t = 45) AND NOT EXISTS "
         "(SELECT id FROM drug_categorizations WHERE drug_dosages.id = drug_categorizations.standard_t0 "
         "OR drug_dosages.id = drug_categorizations.dpm_t0 "

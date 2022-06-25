@@ -14,6 +14,8 @@ python3 -m flask run --host=0.0.0.0 --port=5000
 
 `bash launchApp.sh`
 
+If running on a GCP VM, add the 'flask' and 'postgres' network tags to the machine to open the correct ports
+
 ## To install dependencies run:
 
 Dependencies are based on Python version 3.9.7 and pip 22.1
@@ -41,9 +43,9 @@ To view the relations use `\d RELATION_NAME` and confirm changes
 
 
 ## TODO
-[] Look into restructuring data to be unique in transtion_rates table
-[] Import simulation results data at scale
-[] Scale query request
-[x] Import csv data through app
-[] Look into db table for storing previously created image urls
-[] Auto update updated_on db field
+- [] Look into restructuring data to be unique in transtion_rates table
+- [] Import simulation results data at scale
+- [] Scale query request
+- [x] Import csv data through app
+- [] Look into db table for storing previously created image urls
+- [] Auto update updated_on db field
