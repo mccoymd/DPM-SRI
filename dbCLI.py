@@ -25,7 +25,7 @@ def get_files(directory):
     return results
 
 
-def sort_files(files):
+def sort_files(files, directory):
     id_dict = {}
 
     for f in files:
@@ -37,6 +37,8 @@ def sort_files(files):
                 "Invalid file type, only csv and txt accepted but found: {0}".format(f)
             )
             continue
+
+        f = convert_txt(f, directory)
 
         name_split = split[0].split("/")[-1].split("_")
         file_id = name_split[2]
@@ -76,6 +78,7 @@ def convert_txt(f, directory):
     if extension == ".txt":
         output = join(directory, name) + ".csv"
         file_transform.convert_txt(f, output)
+        os.remove(f)
         return output
 
     return f
@@ -126,5 +129,5 @@ def process_files(id_dict, directory):
 if __name__ == "__main__":
     directory = get_directory(sys.argv)
     files = get_files(directory)
-    id_dict = sort_files(files)
+    id_dict = sort_files(files, directory)
     process_files(id_dict, directory)
