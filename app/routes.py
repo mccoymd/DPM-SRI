@@ -215,8 +215,8 @@ def results():
                 Parameters,
                 Parameters.initial_subclone_population_id == InitialPopulations.id,
             )
-            .join(Parameters, Parameters.evolutionary_rates_id == TransitionRates.id)
-            .join(Parameters, Parameters.drug_sensitivities_id == DrugSensitivities.id)
+            .join(TransitionRates, Parameters.evolutionary_rates_id == TransitionRates.id)
+            .join(DrugSensitivities, Parameters.drug_sensitivities_id == DrugSensitivities.id)
             .where(Parameters.growth_rate <= form.growthRate_max.data)
             .count()
         )
