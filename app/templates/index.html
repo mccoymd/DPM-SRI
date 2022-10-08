@@ -1,12 +1,15 @@
 {% extends "base.html" %}
 
 {% block content %}
-
+<h2>Baseline DPM model</h2>
 {% for option in sriOptions.items() %}
-  <h2>{{ option[0] }}</h2>
+  <h3>{{ option[0] }}</h3>
   <form method="get" action={{ option[1] }}>
     <button type="submit">Continue</button>
   </form>
 {% endfor %}
-
+<h2>Imperfect Information DPM Model (coming soon)</h2>
+{% for option in sriOptions.items() %}
+  <h3>{{ option[0] }}</h3>
+{% endfor %}
 {% endblock %}

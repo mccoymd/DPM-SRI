@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Select file to upload in comma separated format</h2>
+The file should be formated with where columns correspond to
+the following model parameters:
+<br><br>
+<form method="get" action={{ "validateUpload" }}>
+  <input type="file" id="myFile" name="">
+  <button type="submit">Continue</button>
+</form>
+
+
+{% endblock %}
